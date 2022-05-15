@@ -11,6 +11,7 @@ import {
   LineController
 } from 'chart.js';
 
+import PropTypes from "prop-types";
 //import { Line } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -24,7 +25,10 @@ ChartJS.register(
   LineController
 );
 
-export default function CardLineChart() {
+export default function CardLineChart({
+  title,
+  subTitle,
+}) {
   React.useEffect(() => {
     var config = {
       type: "line",
@@ -155,3 +159,13 @@ export default function CardLineChart() {
     </>
   );
 }
+
+CardLineChart.defaultProps = {
+  title: "Default Title",
+  subtitle: "Default Subtitle"
+};
+
+CardLineChart.propTypes = {
+  title: PropTypes.string,
+  subTitle: PropTypes.string,
+};

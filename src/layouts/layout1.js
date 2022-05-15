@@ -8,15 +8,15 @@ import Sidebar from "../components/Sidebar/Sidebar.js";
 import HeaderStats from "../components/Headers/HeaderStats.js";
 import FooterAdmin from "../components/Footers/FooterAdmin.js";
 
-import Footer from "../components/Footers/Footer.js";
-import FooterSmall from "../components/Footers/FooterSmall.js";
+//import Footer from "../components/Footers/Footer.js";
+//import FooterSmall from "../components/Footers/FooterSmall.js";
 
-import AuthNavbar from "../components/Navbars/AuthNavbar.js";
-import IndexNavbar from "../components/Navbars/IndexNavbar.js";
+//import AuthNavbar from "../components/Navbars/AuthNavbar.js";
+//import IndexNavbar from "../components/Navbars/IndexNavbar.js";
 
 // views
 
-import Dashboard1 from "../views/charts.js";
+//import Dashboard1 from "../views/charts.js";
 //import Maps from "views/admin/Maps.js";
 //import Settings from "views/admin/Settings.js";
 //import Tables from "views/admin/Tables.js";

@@ -151,7 +151,7 @@ export default function Sidebar() {
                 </Link>
               </li>
 
-              <li className="items-center">
+              {/* <li className="items-center">
                 <Link
                   className={
                     "text-xs uppercase py-3 font-bold block " +
@@ -193,8 +193,8 @@ export default function Sidebar() {
                   ></i>{" "}
                   Maps
                 </Link>
-              </li>
-            </ul>
+              </li>*/}
+            </ul> 
 
             {/* Divider */}
             <hr className="my-4 md:min-w-full" />

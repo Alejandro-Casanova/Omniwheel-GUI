@@ -1,12 +1,12 @@
 import React from "react";
-import PropTypes from "prop-types";
+//import PropTypes from "prop-types";
 
 const ConnectForm = () => {
     return (
-        <>
+        
             <form className="relative flex flex-wrap items-baseline p-6 rounded-lg shadow-lg bg-white w-full">
                 <div className="m-4">
-                    <label for="InputIP" className="inline-block mb-2 text-gray-700">
+                    <label htmlFor="InputIP" className="inline-block mb-2 text-gray-700">
                         IP Address
                         <input type="text" 
                             className="inline-block
@@ -31,7 +31,7 @@ const ConnectForm = () => {
                     </label>
                 </div>
                 <div className="m-4">
-                    <label for="InputPort" className="inline-block mb-2 text-gray-700">
+                    <label htmlFor="InputPort" className="inline-block mb-2 text-gray-700">
                         Port Number
                         <input type="text" className="block
                             w-full
@@ -76,7 +76,7 @@ const ConnectForm = () => {
                         Connect
                 </button>
             </form>
-        </>
+        
     );
 }
 

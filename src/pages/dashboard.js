@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "gatsby";
+//import { Link } from "gatsby";
 
-import Layout from "../layouts/layout1.js";
+//import Layout from "../layouts/layout1.js";
 
 import CardLineChart from "../components/Cards/CardLineChart.js";
 import CardBarChart from "../components/Cards/CardBarChart.js";
@@ -10,7 +10,8 @@ import CardSocialTraffic from "../components/Cards/CardSocialTraffic.js";
 
 const Dashboard = () => {
   return (
-    <Layout>
+    //<Layout>
+    <>
         <div className="flex flex-wrap">
             <div className="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
                 <CardLineChart />
@@ -27,7 +28,8 @@ const Dashboard = () => {
                 <CardSocialTraffic />
             </div>
         </div>
-    </Layout>
+    </>
+    //</Layout>
   );
 }
 

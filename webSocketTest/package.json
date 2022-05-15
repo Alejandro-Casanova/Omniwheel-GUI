@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "websockettest",
+  "version": "1.0.0",
+  "main": "server.js",
+  "author": "alejandro Casanova",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "jQuery": "^1.7.4"
+  }
+}
