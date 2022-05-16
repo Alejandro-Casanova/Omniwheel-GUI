@@ -22,6 +22,12 @@ import FooterAdmin from "../components/Footers/FooterAdmin.js";
 //import Tables from "views/admin/Tables.js";
 
 const Layout = ({children}) => {
+  React.useEffect(() => {
+    console.log("Layout Rendered")
+    return () => {
+      console.log("Layout Cleanup")
+    };
+  }, []);
   return (
     <>
       <Sidebar />

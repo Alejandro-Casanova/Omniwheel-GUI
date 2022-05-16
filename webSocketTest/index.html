@@ -4,20 +4,60 @@
 </head>
 
 <form name="publish">
-  <input type="text" name="message" maxlength="50"/>
+  <input type="text" name="message" maxlength="100"/>
   <input type="submit" value="Send"/>
+  <input type="button" value="Start/Stop Sine" onclick="onClick()"/>
 </form>
 
 <div id="messages"></div>
 
 <script>
 const url = 'ws://localhost:8080/ws'
-const ws = new WebSocket(url);
+const ws = new WebSocket(url)
+
+const amplitude = 10;
+const freq = 1; // Hz
+const interval_ms = 100;
+let sine_decimals = 2; // Decimal values in the sine result
+let timeCount_ms = 0;
+let running = 0;
+let timerVar;
+const sineWave = (time, fase) => Math.round(sine_decimals* 10 * amplitude * Math.sin(2.0*Math.PI*freq*time + fase)) / (sine_decimals * 10);
+const onClick = () => {
+  if(running == 0){
+    running = 1;
+    timerVar = setInterval(myTimer, interval_ms);
+    console.log("Sine Generator Now Running");
+  }else{
+    running = 0;
+    clearInterval(timerVar);
+    timeCount_ms = 0;
+    console.log("Sine Generator Now Stopped!");
+  }
+}
+const myTimer = () => {
+  let messageObj = {
+    tiempo: timeCount_ms / 1000.0,
+    vel:[
+      sineWave(timeCount_ms/1000.0, 0), 
+      sineWave(timeCount_ms/1000.0, 2.0*Math.PI/3.0), 
+      sineWave(timeCount_ms/1000.0, 4.0*Math.PI/3.0)
+    ],
+    pos:[0,0]
+  };
+
+  console.log("Message Object to send:");
+  console.log(messageObj);
+  
+  ws.send(JSON.stringify(messageObj));
+  timeCount_ms = timeCount_ms + interval_ms;
+}
+
 
 // send message from the form
 document.forms.publish.onsubmit = function() {
   const outgoingMessage = this.message.value;
-
+  console.log(`Received from form: ${outgoingMessage}`);
   //ws.send(JSON.stringify(outgoingMessage));
   ws.send(outgoingMessage); // Must be JSON string
   return false;
@@ -26,16 +66,24 @@ document.forms.publish.onsubmit = function() {
 // handle incoming messages
 ws.onmessage = function(message) {
   
-  console.log(`Show on element: ${message}`);
-  console.log(`Show data on element: ${message.data}`);
+  //console.log(`Show on element: ${message}`);
+  //console.log("Message Data: ")
+  //console.log(message.data);
 
   parsed_message = JSON.parse(message.data)
-  console.log(`Parsed message: ${parsed_message}`);
+  //console.log(`Parsed message: ${parsed_message}`);
 
   let messageElem = document.createElement('div');
   messageElem.textContent = JSON.stringify(parsed_message);
-  document.getElementById('messages').prepend(messageElem);
 
+  const messageElement = document.getElementById('messages');
+
+  if(messageElement.childNodes.length >= 10){
+    messageElement.removeChild(messageElement.lastElementChild);
+  }
+
+  messageElement.prepend(messageElem);
+  
 };
 
 ws.onclose = event => console.log(`Closed ${event.code}`);

@@ -43,15 +43,17 @@ function onSocketConnect(ws) {
 
   ws.on('message', function(message) {
     log(`message received: ${message}`);
+    
 
-    message = message.slice(0, 50); // max message length will be 50
-    //message = JSON.parse(message)
-    log(`message after slice: ${message}`);
-
-    const parsed = JSON.parse(message)
-    log(`parsed message: ${parsed}`);
+    //message = message.slice(0, 100); // max message length will be 50
+    message = JSON.parse(message)
+    //log(`message after slice: ${message}`);
+    log(message);
+    //const parsed = JSON.parse(message)
+    //log(`parsed message: ${parsed}`);
     for(let client of clients) {
-      client.send(JSON.stringify(parsed));
+      //client.send(JSON.stringify(parsed));
+      client.send(JSON.stringify(message));
     }
   });
 

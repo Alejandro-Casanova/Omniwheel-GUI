@@ -1,6 +1,7 @@
 import "./src/css/index.css"
 import "./src/css/tailwind-mods.css"
 import React from "react"
+import { withStore } from "./src/components/WebSocketStore/WebSocketStore.js";
 
 // Import font awesome icons. Must install package first (npm i @fortawesome/fontawesome-free)
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -17,3 +18,6 @@ export const wrapPageElement = ({ element, props }) => {
   // including location, data, etc - you don't need to pass it
   return <Layout {...props}>{element}</Layout>
 }
+
+export const wrapRootElement = withStore;
+  

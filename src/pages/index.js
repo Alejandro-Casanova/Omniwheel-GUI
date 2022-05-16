@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import React, {Component} from "react";
 //import { Link } from "gatsby";
-import WebSocketComponent from "../components/WebSocket/WebSocket.js"
+import {useStore} from "../components/WebSocketStore/WebSocketStore.js"
 
 //import IndexNavbar from "../components/Navbars/IndexNavbar.js";
 //import Footer from "../components/Footers/Footer.js";
@@ -40,6 +40,9 @@ class Text extends Component {
 const Index = () => {
 
   let mensaje = "Hola";
+  const store = useStore();
+  console.log("Store: ");
+  console.log(store);
 
   return (
 
@@ -48,7 +51,19 @@ const Index = () => {
         <div className="w-full mb-12 px-4">
           {mensaje}
           <Text />
-          <WebSocketComponent />
+          
+          <div>
+            <ul>
+              {store.messageList.map((item, index) => (
+                <li
+                  key={index}
+                >
+                  {JSON.stringify(item)}
+                </li>
+              ))}
+             </ul>
+          </div>
+
         </div>
       </div>
     //</Layout>

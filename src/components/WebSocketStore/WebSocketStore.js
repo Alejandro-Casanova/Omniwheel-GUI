@@ -1,13 +1,35 @@
-import React from "react";
+import React, {createContext} from "react";
 
-const WebSocketComponent = () => {
+export const wsContext = createContext();
+wsContext.displayName = 'WebSocketContext';
+
+// HOC - HIGH ORDER COMPONENT (check react docs for more info)
+// Used in gatsby-browser.jsx
+export const withStore = ({element}) => {
+  return(
+    <WebSocketStore>
+      {element}
+    </WebSocketStore>
+  ) 
+}
+
+export const useStore = () => {
+  return React.useContext(wsContext);
+}
+
+const WebSocketStore = ({children}) => {
 
   const [rxData, setRxData] = React.useState({
     messageList: [
       { tiempo: 0, vel: [0, 0, 0], pos: [0, 0] },
     ],
-    velData: [
-      { tiempo: 0, xVel: 0, yVel: 0, zVel: 0 },
+    velData: {
+      xVel: [0, 1, 2],
+      yVel: [2, 1, 0],
+      zVel: [2, 2, 2],
+    },
+    timeData: [
+      0, 1, 2,
     ],
     posData:[
       { tiempo: 0, xPos: 0, yPos: 0 },
@@ -53,36 +75,38 @@ const WebSocketComponent = () => {
           //Update State
           setRxData( (oldData) => {
             const clonedData = {...oldData}; // Prevents state mutation (indispensable)
+            if(clonedData.messageList.length >= 50){
+              clonedData.messageList.shift();
+              clonedData.velData.xVel.shift();
+              clonedData.velData.yVel.shift();
+              clonedData.velData.zVel.shift();
+              clonedData.timeData.shift();
+              clonedData.posData.shift();
+            }
             clonedData.messageList.push(data);
-            clonedData.velData.push({tiempo: data.tiempo, xVel: data.vel[0], yVel: data.vel[1], zVel: data.vel[2]});
+            clonedData.velData.xVel.push(data.vel[0]);
+            clonedData.velData.yVel.push(data.vel[1]);
+            clonedData.velData.zVel.push(data.vel[2]);
+            clonedData.timeData.push(data.tiempo);
             clonedData.posData.push({tiempo: data.tiempo, xPos: data.pos[0], yPos: data.pos[1]});
             return clonedData;
           });
-
-          //console.log(JSON.stringify(rxData));
+          
+          
         }
       }
     }
     
   }, [_isMounted]);
 
-  //React.useEffect( () => {}, [state]);
+  React.useEffect( () => {
+    console.log("RXDATA CHANGED: ")
+    //console.log(JSON.stringify(rxData));
+  }, [rxData]);
 
   return (
-    <div>
-      <ul>
-        {rxData.messageList.map((item, index) => (
-          <li
-            key={index}
-          >
-            {JSON.stringify(item)}
-          </li>
-        ))}
-      </ul>
-      
-    </div>
-  );
-  
+    <wsContext.Provider value={rxData}>
+      {children}
+    </wsContext.Provider>
+  )  
 }
-
-export default WebSocketComponent;
