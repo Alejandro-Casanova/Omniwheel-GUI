@@ -24,22 +24,29 @@ const WebSocketStore = ({children}) => {
       { tiempo: 0, vel: [0, 0, 0], pos: [0, 0] },
     ],
     velData: {
-      xVel: [0, 1, 2],
-      yVel: [2, 1, 0],
-      zVel: [2, 2, 2],
+      xVel: [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2}],
+      yVel: [{x: 0, y: 1}, {x: 1, y: 1}, {x: 2, y: 1}],
+      zVel: [{x: 0, y: 2}, {x: 1, y: 1}, {x: 2, y: 0}],
     },
-    timeData: [
-      0, 1, 2,
-    ],
+    timeData: [ 0, 1, 2 ],
     posData:[
-      { tiempo: 0, xPos: 0, yPos: 0 },
+      { x: 0, y: 0 },
     ]
   });
 
   const [_isMounted, setMounted] = React.useState(false);
   const _ws = React.useRef(null);
 
+  // On Boot
   React.useEffect(() => {
+
+    setRxData({
+      messageList: [],
+      velData: { xVel: [], yVel: [], zVel: [] },
+      timeData: [],
+      posData:[{}]
+    });
+
     _ws.current = new WebSocket("ws://localhost:8080/ws");
     _ws.current.onopen = () => console.log("ws opened");
     _ws.current.onclose = () => console.log("ws closed");
@@ -52,6 +59,7 @@ const WebSocketStore = ({children}) => {
     };
   }, []);
 
+  // After WebSocket Init
   React.useEffect(() => {
     
     //const _ws = new WebSocket("ws://localhost:8080/ws");
@@ -84,11 +92,11 @@ const WebSocketStore = ({children}) => {
               clonedData.posData.shift();
             }
             clonedData.messageList.push(data);
-            clonedData.velData.xVel.push(data.vel[0]);
-            clonedData.velData.yVel.push(data.vel[1]);
-            clonedData.velData.zVel.push(data.vel[2]);
+            clonedData.velData.xVel.push({x: data.tiempo, y: data.vel[0]});
+            clonedData.velData.yVel.push({x: data.tiempo, y: data.vel[1]});
+            clonedData.velData.zVel.push({x: data.tiempo, y: data.vel[2]});
             clonedData.timeData.push(data.tiempo);
-            clonedData.posData.push({tiempo: data.tiempo, xPos: data.pos[0], yPos: data.pos[1]});
+            clonedData.posData.push({x: data.pos[0], y: data.pos[1]});
             return clonedData;
           });
           

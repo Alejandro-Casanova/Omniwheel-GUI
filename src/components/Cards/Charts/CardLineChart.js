@@ -26,21 +26,33 @@ ChartJS.register(
   LineController
 );
 
+export const colors = ["yellow", "magenta", "cyan", "red", "blue", "green"];
+
 const CardLineChart = ({
   title = "Default Title",
   subTitle = "Default Subtitle",
   yAxisLabel = "Value",
   xAxisLabel = "time (s)",
-  yAxisData = {default: [0, 1, 2, 3, 4, 5]},
-  xAxisData = [0, 1, 2, 3, 4, 5]
+  displayData = {default: [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2}, {x: 3, y: 3}, {x: 4, y: 4}, {x: 5, y: 5}]},
+  //xAxisLabels = [0, 1, 2, 3, 4, 5]
 }) => {
-  const colors = ["red", "blue", "green"];
+
   const config = {
     type: "line",
     data: {
       
-      labels: xAxisData,
-      datasets: [
+      //labels: xAxisLabels,
+      //labels: xAxisLabels,
+      datasets: Array.from(Object.keys(displayData), (key, i) => {
+        return {
+          label: key,
+          backgroundColor: colors[i],
+          borderColor: colors[i],
+          data: displayData[key],
+          fill: false,
+        }
+      }),
+        //[
         // {
         //   label: new Date().getFullYear(),
         //   backgroundColor: "#4c51bf",
@@ -57,11 +69,18 @@ const CardLineChart = ({
         //   data: [40, 68, 86, 74, 56, 60, 87],
         //   //tension: 0.4,
         // },
-      ],
+      //],
     },
     options: {
       animation: false,
-      //parsing: false,
+      parsing: false, //Important: datasets must be array of objects with x and y key-value pairs
+      maintainAspectRatio: false,
+      responsive: true,
+      datasets: {
+        line: {
+          pointRadius: 0,
+        }
+      },
       plugins: {
         legend: {
           labels: {
@@ -75,23 +94,33 @@ const CardLineChart = ({
           text: title,
           fontColor: "white",
         },
-        tooltips: {
+        tooltip: {
           mode: "index",
           intersect: false,
         },
       },
-      maintainAspectRatio: false,
-      responsive: true,
       hover: {
         mode: "nearest",
         intersect: true,
       },
       scales: {
         xAxis: {
+          type: "linear",
+          grace: "2%",
+          display: true,
+          //suggestedMin: 0,
+          suggestedMax: 1,
           ticks: {
             color: "rgba(255,255,255,.7)",
+            display: true,
+            stepSize: 0.1, //interval between ticks
+            //precision: 2,
+            //labels: xAxisLabels,
+            
+            callback: function(value, index, ticks) {
+              return value.toFixed(2);
+            },
           },
-          display: true,
           title: {
             display: true,
             text: xAxisLabel,
@@ -108,8 +137,10 @@ const CardLineChart = ({
           },
         },
         yAxis:{
+          grace: "2%",
           ticks: {
             color: "rgba(255,255,255,.7)",
+            stepSize: 1,
           },
           display: true,
           title: {
@@ -131,19 +162,33 @@ const CardLineChart = ({
     },
   };
 
+
+  // config.data.datasets = Array.from(Object.keys(displayData), (key, i) => {
+  //   return {
+  //     label: key,
+  //     backgroundColor: colors[i],
+  //     borderColor: colors[i],
+  //     data: displayData[key],
+  //     fill: false,
+  //   }
+  // });
+
+
   //React.useEffect(() => {
-    let i = 0;
-    for (const key in yAxisData){
-      config.data.datasets.push({
-        label: key,
-        backgroundColor: colors[i],
-        borderColor: colors[i],
-        data: yAxisData[key],
-        fill: false,
+    // let i = 0;
+    // for (const key in displayData){
+    //   config.data.datasets.push({
+    //     label: key,
+    //     backgroundColor: colors[i],
+    //     borderColor: colors[i],
+    //     data: displayData[key],
+    //     fill: false,
         
-      });
-      i++;
-    }
+    //   });
+    //   i++;
+    // }
+    console.log("Plot Datasets: ");
+    console.log(config.data.datasets);
     //let ctx = document.getElementById("line-chart").getContext("2d");
     //const myChart = new ChartJS(ctx, config);
   //});
@@ -180,8 +225,8 @@ CardLineChart.propTypes = {
   subTitle: PropTypes.string,
   yAxisLabel : PropTypes.string,
   xAxisLabel : PropTypes.string,
-  yAxisData : PropTypes.objectOf(PropTypes.array),
-  xAxisData : PropTypes.array,
+  displayData : PropTypes.objectOf(PropTypes.array),
+  //xAxisLabels : PropTypes.array,
 };
 
 export default CardLineChart;
