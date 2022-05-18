@@ -21,16 +21,23 @@ import FooterAdmin from "../components/Footers/FooterAdmin.js";
 //import Settings from "views/admin/Settings.js";
 //import Tables from "views/admin/Tables.js";
 
-const Layout = ({children}) => {
-  React.useEffect(() => {
-    console.log("Layout Rendered")
-    return () => {
-      console.log("Layout Cleanup")
-    };
-  }, []);
+const Layout = ({children, location}) => {
+  // React.useEffect(() => {
+  //   console.log("Layout Rendered")
+  //   return () => {
+  //     console.log("Layout Cleanup")
+  //   };
+  // }, []);
+
+  // React.useEffect(() => {
+  //   console.log("Pathname: ")
+  //   console.log(location.pathname)
+    
+  // }, [location.pathname]);
+
   return (
     <>
-      <Sidebar />
+      <Sidebar currentPath={location.pathname} />
       <div className="relative md:ml-64 bg-blueGray-100">
         <AdminNavbar />
         {/* Header */}

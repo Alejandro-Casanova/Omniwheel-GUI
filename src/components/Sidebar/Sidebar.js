@@ -5,7 +5,9 @@ import { Link } from "gatsby";
 import NotificationDropdown from "../Dropdowns/NotificationDropdown.js";
 import UserDropdown from "../Dropdowns/UserDropdown.js";
 
-export default function Sidebar() {
+//const isBrowser = typeof window !== "undefined"
+
+export default function Sidebar({currentPath}) {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
   return (
     <>
@@ -89,7 +91,8 @@ export default function Sidebar() {
                 <Link
                   className={
                     "text-xs uppercase py-3 font-bold block " +
-                    (window.location.href.indexOf("/connect") !== -1
+                    //(window.location.href.indexOf("/connect") !== -1
+                    (currentPath === "/connect"
                       ? "text-lightBlue-500 hover:text-lightBlue-600"
                       : "text-blueGray-700 hover:text-blueGray-500")
                   }
@@ -98,7 +101,8 @@ export default function Sidebar() {
                   <i
                     className={
                       "fas fa-link mr-2 text-sm " +
-                      (window.location.href.indexOf("/connect") !== -1
+                      //(window.location.href.indexOf("/connect") !== -1
+                      (currentPath === "/connect"
                         ? "opacity-75"
                         : "text-blueGray-300")
                     }
@@ -111,7 +115,8 @@ export default function Sidebar() {
                 <Link
                   className={
                     "text-xs uppercase py-3 font-bold block " +
-                    (window.location.href.indexOf("/dashboard") !== -1
+                    //(window.location.href.indexOf("/dashboard") !== -1
+                    (currentPath === "/dashboard"
                       ? "text-lightBlue-500 hover:text-lightBlue-600"
                       : "text-blueGray-700 hover:text-blueGray-500")
                   }
@@ -120,7 +125,8 @@ export default function Sidebar() {
                   <i
                     className={
                       "fas fa-tv mr-2 text-sm " +
-                      (window.location.href.indexOf("/dashboard") !== -1
+                      //(window.location.href.indexOf("/dashboard") !== -1
+                      (currentPath === "/dashboard"
                         ? "opacity-75"
                         : "text-blueGray-300")
                     }
@@ -133,7 +139,8 @@ export default function Sidebar() {
                 <Link
                   className={
                     "text-xs uppercase py-3 font-bold block " +
-                    (window.location.href.indexOf("/settings") !== -1
+                    //(window.location.href.indexOf("/settings") !== -1
+                    (currentPath === "/settings"
                       ? "text-lightBlue-500 hover:text-lightBlue-600"
                       : "text-blueGray-700 hover:text-blueGray-500")
                   }
@@ -142,7 +149,8 @@ export default function Sidebar() {
                   <i
                     className={
                       "fa fa-tools mr-2 text-sm " +
-                      (window.location.href.indexOf("/settings") !== -1
+                      //(window.location.href.indexOf("/settings") !== -1
+                      (currentPath === "/settings"
                         ? "opacity-75"
                         : "text-blueGray-300")
                     }
