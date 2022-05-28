@@ -1890,6 +1890,10 @@ select {
   min-width: 0px;
 }
 
+.min-w-half {
+  min-width: 50%;
+}
+
 .min-w-48 {
   min-width: 12rem;
 }

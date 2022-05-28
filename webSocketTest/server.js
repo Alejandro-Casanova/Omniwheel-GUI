@@ -25,7 +25,7 @@ function accept(req, res) {
       req.headers.upgrade.toLowerCase() == 'websocket' &&
       // can be Connection: keep-alive, Upgrade
       req.headers.connection.match(/\bupgrade\b/i)) {
-    log("Web socket upgrade")
+    log("Web socket connected")
     wss.handleUpgrade(req, req.socket, Buffer.alloc(0), onSocketConnect);
   } else if (req.url == '/') { // index.html
     log("Browser Connected")
@@ -43,17 +43,23 @@ function onSocketConnect(ws) {
 
   ws.on('message', function(message) {
     log(`message received: ${message}`);
-    
 
     //message = message.slice(0, 100); // max message length will be 50
-    message = JSON.parse(message)
+    let parsed_message;
+    try {
+      parsed_message = JSON.parse(message)
+    } catch (error) {
+      console.log("Invalid JSON string: %s", message);
+    }
+  
     //log(`message after slice: ${message}`);
-    log(message);
+    log("Parsed object: ");
+    log(parsed_message);
     //const parsed = JSON.parse(message)
     //log(`parsed message: ${parsed}`);
     for(let client of clients) {
       //client.send(JSON.stringify(parsed));
-      client.send(JSON.stringify(message));
+      client.send(JSON.stringify(parsed_message));
     }
   });
 

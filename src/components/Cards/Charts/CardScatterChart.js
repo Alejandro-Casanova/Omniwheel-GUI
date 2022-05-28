@@ -116,8 +116,8 @@ const CardScatter = ({
         },
     };
 
-    console.log("Scatter data: ");
-    console.log(data.datasets[0].data);
+    // console.log("Scatter data: ");
+    // console.log(data.datasets[0].data);
 
     return (
         <>

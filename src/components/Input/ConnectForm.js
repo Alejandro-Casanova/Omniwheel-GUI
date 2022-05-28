@@ -1,74 +1,61 @@
-import React from "react";
+import React, { useCallback, useReducer } from "react";
 //import PropTypes from "prop-types";
 import Input from "./Input";
+import { useStore } from "../WebSocketStore/WebSocketStore.js";
+
+const initialState = {
+    ip: "",
+    port: "",
+}
+
+const reducer = (state, {field, value}) => {
+    return {
+        ...state,
+        [field]: value
+    }
+}
 
 const ConnectForm = () => {
+    const {setConnectionData} = useStore();
+
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    const handleSubmit = (e) => {
+        //alert('Your favorite flavor is: ' + this.state.value);
+        console.log("Submited state: %s", JSON.stringify(state));
+        setConnectionData(state);
+        e.preventDefault();
+    }
+
+    const onChange = useCallback((e) => {
+        dispatch({field: e.target.name, value: e.target.value});
+    }, [])
+
+    // useEffect(() => {
+    //     console.log("Connect Form State: %s", JSON.stringify(state));
+    //     //console.log(state);
+        
+    // }, [state]);
+
     return (
         
-        <form className="relative flex flex-wrap p-6 rounded-lg shadow-lg bg-white w-full">
-            <div className="relative flex flex-col m-4">
-                <label htmlFor="InputIP" className="mb-2 text-gray-700">
-                    IP Address
-                </label>
-                {/* <input type="text" 
-                    className="
-                    w-full
-
-                    px-3
-                    py-1.5
-                    mt-2
-
-                    text-base
-                    font-normal
-                    text-gray-700
-
-                    bg-white bg-clip-padding
-                    border border-solid border-gray-300
-                    rounded
-                    transition
-                    ease-in-out
-                    
-                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" 
-                    id="InputIP"
-                    aria-describedby="ipAddressHelp" 
-                    placeholder="Enter IP Address"
-                /> */}
-                <Input iconName = "fas fa-network-wired" ariaText="ipAddressHelp" placeholderText="Enter IP Address"  />
+        <form onSubmit={handleSubmit} className="relative flex flex-wrap place-content-evenly p-6 rounded-lg shadow-lg bg-white w-full">
+            <div className="relative lg:flex-1 mx-4 my-1">
+                
+                    <Input value={state.ip} onChange={onChange} name="ip" iconName="fas fa-network-wired" labelText="IP Address" ariaText="ipAddressHelp" placeholderText="Enter IP Address"  />
                 
             </div>
-            <div className="relative flex flex-col m-4">
-                <label htmlFor="InputPort" className="mb-2 text-gray-700">
-                    Port Number
-                </label>        
-                {/* <input type="text" className="
-                    w-full
+            <div className="relative lg:flex-1 mx-4 my-1">
 
-                    px-3
-                    py-1.5
-                    mt-2
-                    
-                    text-base
-                    font-normal
-                    text-gray-700
-
-                    bg-white bg-clip-padding
-                    border border-solid border-gray-300
-                    rounded
-                    transition
-                    ease-in-out
-                    
-                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" 
-                    id="InputPort"
-                    aria-describedby="portNumberHelp" 
-                    placeholder="Port Number"
-                /> */}
-                <Input iconName = "fas fa-network-wired" ariaText="portNumberHelp" placeholderText="Port Number" />
+                    <Input value={state.port} onChange={onChange} name="port" iconName="fas fa-network-wired" labelText="Port Number" ariaText="portNumberHelp" placeholderText="Enter Port Number" />
+                
             </div>
             {/* <div className=""></div> */}
-            <div className="relative flex flex-col justify-end m-4">
+            <div className="relative flex justify-center lg:flex-initial m-4 pt-2.5">
                 <button type="submit" className="
                     
-                    p-2.5 mb-3.5
+                    place-self-center
+                    py-2.5 px-4
 
                     text-base
                     font-medium

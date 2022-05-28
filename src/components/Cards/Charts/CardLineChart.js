@@ -187,11 +187,13 @@ const CardLineChart = ({
     //   });
     //   i++;
     // }
-    console.log("Plot Datasets: ");
-    console.log(config.data.datasets);
+    
     //let ctx = document.getElementById("line-chart").getContext("2d");
     //const myChart = new ChartJS(ctx, config);
   //});
+
+  // console.log("Plot Datasets: ");
+  // console.log(config.data.datasets);
 
   return (
     <>

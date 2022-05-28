@@ -37,23 +37,29 @@ const onClick = () => {
   }
 }
 const myTimer = () => {
-  let messageObj = {
+  let messagePos = {
+    pos:[
+      10 * sineWave(timeCount_ms/1000.0, 0.061, Math.PI/2.0),
+      10 * sineWave(timeCount_ms/1000.0, 0.037, Math.PI/2.0)
+    ],
+    data_type: "POS"
+  };
+  let messageVel = {
     tiempo: timeCount_ms / 1000.0,
     vel:[
       amplitude * sineWave(timeCount_ms/1000.0, frequency, 0), 
       amplitude * sineWave(timeCount_ms/1000.0, frequency, 2.0*Math.PI/3.0), 
       amplitude * sineWave(timeCount_ms/1000.0, frequency, 4.0*Math.PI/3.0)
     ],
-    pos:[
-      10 * sineWave(timeCount_ms/1000.0, 0.061, Math.PI/2.0),
-      10 * sineWave(timeCount_ms/1000.0, 0.037, Math.PI/2.0)
-    ],
+    data_type: "VEL"
   };
 
-  console.log("Message Object to send:");
-  console.log(messageObj);
+  console.log("Message Objects to send:");
+  console.log(messagePos);
+  console.log(messageVel);
   
-  ws.send(JSON.stringify(messageObj));
+  ws.send(JSON.stringify(messagePos));
+  ws.send(JSON.stringify(messageVel));
   timeCount_ms = timeCount_ms + interval_ms;
 }
 
