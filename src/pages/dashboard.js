@@ -27,9 +27,6 @@ const Dashboard = () => {
             </div>
         </div>
         <div className="flex flex-row flex-wrap mt-4 ">
-            {/* <div className="relative w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
-                <CartesianForm cmd_name="POS" formName="pos" variableName="Position" />
-            </div> */}
             <div className="w-full xl:w-full px-4">
                 <FormSelector />
             </div>

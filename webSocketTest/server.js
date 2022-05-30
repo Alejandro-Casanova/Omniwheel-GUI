@@ -31,7 +31,7 @@ function accept(req, res) {
     log("Browser Connected")
     fs.createReadStream('./index.html').pipe(res);
   } else { // page not found
-    log("Page not Found");
+    log("Page not Found: ", req.url);
     res.writeHead(404);
     res.end();
   }
@@ -41,7 +41,7 @@ function onSocketConnect(ws) {
   clients.add(ws);
   log(`new connection`);
 
-  ws.on('message', function(message) {
+  ws.on('message', (message) => {
     log(`message received: ${message}`);
 
     //message = message.slice(0, 100); // max message length will be 50
@@ -63,8 +63,8 @@ function onSocketConnect(ws) {
     }
   });
 
-  ws.on('close', function() {
-    log(`connection closed`);
+  ws.on('close', (e) => {
+    log(`Connection closed. Code:`, e);
     clients.delete(ws);
   });
 }
