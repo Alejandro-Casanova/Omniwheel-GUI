@@ -40,9 +40,9 @@ class Text extends Component {
 const Index = () => {
 
   let mensaje = "Hola";
-  const {rxData} = useStore();
-  console.log("Store: ");
-  console.log(rxData);
+  // const {rxData} = useStore();
+  // console.log("Store: ");
+  // console.log(rxData);
 
   return (
 
@@ -52,7 +52,7 @@ const Index = () => {
           {mensaje}
           <Text />
           
-          <div>
+          {/* <div>
             <ul>
               {rxData.messageList.map((item, index) => (
                 <li
@@ -62,7 +62,7 @@ const Index = () => {
                 </li>
               ))}
              </ul>
-          </div>
+          </div> */}
 
         </div>
       </div>

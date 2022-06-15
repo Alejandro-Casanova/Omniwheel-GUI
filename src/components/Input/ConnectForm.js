@@ -1,7 +1,7 @@
 import React, { useCallback, useReducer } from "react";
 //import PropTypes from "prop-types";
 import Input from "./Input";
-import { useStore } from "../WebSocketStore/WebSocketStore.js";
+//import { useStore } from "../WebSocketStore/WebSocketStore.js";
 
 const initialState = {
     ip: "",
@@ -16,14 +16,14 @@ const reducer = (state, {field, value}) => {
 }
 
 const ConnectForm = () => {
-    const {setConnectionData} = useStore();
+    //const {setConnectionData} = useStore();
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const handleSubmit = (e) => {
         //alert('Your favorite flavor is: ' + this.state.value);
         console.log("Submited state: %s", JSON.stringify(state));
-        setConnectionData(state);
+        //setConnectionData(state);
         e.preventDefault();
     }
 

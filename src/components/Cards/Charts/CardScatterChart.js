@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Chart as ChartJS,
   LinearScale,
@@ -10,30 +10,99 @@ import {
 
 import { Scatter } from 'react-chartjs-2';
 import PropTypes from "prop-types";
+import useWebSocket from '../../WebSocketStore/useWebSocket';
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
 export const colors = ["yellow", "magenta", "cyan", "red", "blue", "green"];
+
+const initRxData = (intialVal) =>  {
+    if(typeof intialVal !== 'object' && intialVal.constructor !== Object){
+        return intialVal;
+    }
+    
+    return {...intialVal}
+}
+
+const rxDataReducer = (state, action) => {
+
+    const clonedData = {...state}; // Prevents state mutation (indispensable)
+  
+    if (typeof action === 'string' || action instanceof String){
+      if(action === 'reset'){
+        console.log("Reset achieved");
+        return state; // Doesn't work
+      }
+    }
+  
+    const action_parsed = JSON.parse(action)
+  
+    // Checks if message is an object
+    if(typeof action_parsed !== 'object' && action.constructor !== Object){
+      console.log("Not an object:")
+      console.log(action_parsed)
+      return clonedData;
+    }
+  
+    // Checks if message object has a "data_type" key
+    if(!('data_type' in action_parsed)){
+      console.log("Missing data_type")
+      console.log(action_parsed)
+      return clonedData
+    }
+  
+    // Process message object
+    if(action_parsed.data_type === 'POS'){
+
+        Object.keys(clonedData).forEach((value) => { // Warning: won't work with more than 1 datasets
+            if(clonedData[value].length >= 50){
+                clonedData[value].shift();
+            }
+            clonedData[value].push({x: action_parsed.pos[0], y: action_parsed.pos[1]});
+        });
+
+    }else{
+      console.log("Unknown data type: %s", action_parsed.data_type)
+    }
+  
+    return clonedData;
+}
 
 const CardScatter = ({
     title = "Default Title",
     subTitle = "Default Subtitle",
     yAxisLabel = "Y",
     xAxisLabel = "X",
-    displayData = {default: [{x: -4, y: 4}, {x: -4, y: -4}, {x: 0, y: 0}, {x: 1, y: 1}, {x: 4, y: 4}, {x: 4, y: -4} ]},
+    initialDisplayData = {default: [{x: -4, y: 4}, {x: -4, y: -4}, {x: 0, y: 0}, {x: 1, y: 1}, {x: 4, y: 4}, {x: 4, y: -4} ]},
 }) => {
+    const [_dispatch_txData, _rxData] = useWebSocket(rxDataReducer, initialDisplayData, initRxData);
+    const [_data, _setData] = useState({datasets:[]});
 
-    const data = {
-        datasets: Array.from(Object.keys(displayData), (key, i) => {
+    useEffect(() => {
+        _setData({
+          datasets: Array.from(Object.keys(_rxData), (key, i) => {
             return {
               label: key,
               backgroundColor: colors[i],
               borderColor: colors[i],
-              data: displayData[key],
+              data: _rxData[key],
               fill: false,
             }
-        }),
-    };
+          }),
+        })
+    }, [_rxData])
+
+    // const data = {
+    //     datasets: Array.from(Object.keys(displayData), (key, i) => {
+    //         return {
+    //           label: key,
+    //           backgroundColor: colors[i],
+    //           borderColor: colors[i],
+    //           data: displayData[key],
+    //           fill: false,
+    //         }
+    //     }),
+    // };
 
     const options = {
         animation: false,
@@ -138,7 +207,7 @@ const CardScatter = ({
                 {/* ChartJS */}
                 <div className="relative h-350-px">
                     {/* <canvas id="line-chart"></canvas> */}
-                    <Scatter options={options} data={data} />
+                    <Scatter options={options} data={_data} />
                 </div>
                 </div>
             </div>

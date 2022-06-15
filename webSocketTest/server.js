@@ -11,13 +11,16 @@ import fs from 'fs';
 //const ws = new require('ws');
 import WebSocket, { WebSocketServer } from "ws"
 
+import net from "net"
+
+const http_server = http.createServer(accept).listen(8080)
+
 const wss = new WebSocketServer({noServer: true});
 
 const clients = new Set();
+const Arduino_clients = new Set();
 
 const log = console.log;
-
-http.createServer(accept).listen(8080)
 
 function accept(req, res) {
 
@@ -68,4 +71,64 @@ function onSocketConnect(ws) {
     clients.delete(ws);
   });
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// SERVIDOR ARDUINO ///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+const server = net.createServer((client) => {
+  console.log('Client connect. Client local address: ' + client.localAddress + ':' + client.localPort + '. client remote address: ' + client.remoteAddress + ':' + client.remotePort);
+  
+  Arduino_clients.add(client);
+
+  //client.setTimeout(20000);   // default socket timeout
+
+  client.on('data', async (data) => {
+    // Print received client data and length.
+    console.log('Received client data: ' + data.toString('utf-8') + ', data size : ' + client.bytesRead);
+  })
+
+  // When client send data complete.
+  client.on('end', () => {
+
+    Arduino_clients.delete(client);
+    
+    console.log('Client disconnect.');
+    
+    // Get current connections count.
+    server.getConnections((err, count) => {
+
+      if(!err) {
+        // Print current connection count in server console.
+        console.log("There are %d connections now. ", count);
+      } else {
+        console.error(err);
+      }
+
+    });
+
+  });
+
+  // When client timeout.
+  // client.on('timeout', function () {
+  //     console.log('Client request time out. ');
+  //     client.destroy();
+  // })
+
+})
+
+// Error handling
+server.on('error', (err) => {
+  console.error(err);
+  throw err;
+});
+
+// Listen on port 8090
+server.listen(8090, () => {
+  console.log('opened server on', server.address());
+
+  server.on('close', () => {
+    console.log('TCP server socket is closed.');
+  });
+});
 

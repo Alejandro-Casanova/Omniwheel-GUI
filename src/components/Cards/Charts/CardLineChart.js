@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef, useEffect, useMemo, useCallback, useState} from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,6 +14,7 @@ import {
 import PropTypes from "prop-types";
 //simport { prototype } from "keyv";
 import { Line } from 'react-chartjs-2';
+import reconnectingWebSocket from "../../WebSocketStore/reconnectingWebSocket";
 
 ChartJS.register(
   CategoryScale,
@@ -26,174 +27,203 @@ ChartJS.register(
   LineController
 );
 
-export const colors = ["yellow", "magenta", "cyan", "red", "blue", "green"];
+const colors = ["yellow", "magenta", "cyan", "red", "blue", "green"];
+
+// RX DATA ////////////////////////////////////////////////////////////////////////
+
+const initRxData = (intialVal) => {
+  return {
+    xVel: [intialVal], 
+    yVel: [intialVal], 
+    zVel: [intialVal],
+  }
+}
+
+const rxDataReducer = (state, action) => {
+
+  const clonedData = {...state}; // Prevents state mutation (indispensable)
+
+  if (typeof action === 'string' || action instanceof String){
+    if(action === 'reset'){
+      console.log("Reset achieved");
+      return initRxData(0)
+    }
+  }
+
+  const action_parsed = JSON.parse(action)
+
+  // Checks if message is an object
+  if(typeof action_parsed !== 'object' && action.constructor !== Object){
+    console.log("Not an object:")
+    console.log(action_parsed)
+    return clonedData;
+  }
+
+  // Checks if message object has a "data_type" key
+  if(!('data_type' in action_parsed)){
+    console.log("Missing data_type")
+    console.log(action_parsed)
+    return clonedData
+  }
+
+  // Process message object
+  if(action_parsed.data_type === 'VEL'){
+    if(clonedData.xVel.length >= 50){
+      clonedData.xVel.shift();
+      clonedData.yVel.shift();
+      clonedData.zVel.shift();
+    }
+    clonedData.xVel.push({x: action_parsed.tiempo, y: action_parsed.vel[0]});
+    clonedData.yVel.push({x: action_parsed.tiempo, y: action_parsed.vel[1]});
+    clonedData.zVel.push({x: action_parsed.tiempo, y: action_parsed.vel[2]});
+  }else{
+    console.log("Unknown data type: %s", action_parsed.data_type)
+  }
+
+  return clonedData;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////77
 
 const CardLineChart = ({
   title = "Default Title",
   subTitle = "Default Subtitle",
   yAxisLabel = "Value",
   xAxisLabel = "time (s)",
-  displayData = {default: [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2}, {x: 3, y: 3}, {x: 4, y: 4}, {x: 5, y: 5}]},
+  //displayData = {default: [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2}, {x: 3, y: 3}, {x: 4, y: 4}, {x: 5, y: 5}]},
   //xAxisLabels = [0, 1, 2, 3, 4, 5]
 }) => {
 
-  const config = {
-    type: "line",
-    data: {
-      
-      //labels: xAxisLabels,
-      //labels: xAxisLabels,
-      datasets: Array.from(Object.keys(displayData), (key, i) => {
+  const ws = useRef();
+  const [rxData, dispatch_rxData] = React.useReducer(rxDataReducer, 0, initRxData)
+  const [data, setData] = useState({datasets:[]});
+
+  useEffect(() => {
+    ws.current = reconnectingWebSocket();
+    ws.current.on(dispatch_rxData);
+    
+    return () => {
+      ws.current.off(dispatch_rxData);
+      ws.current.close();
+    }
+  }, []);
+  
+  useEffect(() => {
+    setData({
+      datasets: Array.from(Object.keys(rxData), (key, i) => {
         return {
           label: key,
           backgroundColor: colors[i],
           borderColor: colors[i],
-          data: displayData[key],
+          data: rxData[key],
           fill: false,
         }
       }),
-        //[
-        // {
-        //   label: new Date().getFullYear(),
-        //   backgroundColor: "#4c51bf",
-        //   borderColor: "#fff",
-        //   data: [65, 78, 66, 44, 56, 67, 75],
-        //   fill: false,
-        //   //tension: 0.4,
-        // },
-        // {
-        //   label: new Date().getFullYear() - 1,
-        //   fill: false,
-        //   backgroundColor: "#fff",
-        //   borderColor: "#4c51bf",
-        //   data: [40, 68, 86, 74, 56, 60, 87],
-        //   //tension: 0.4,
-        // },
-      //],
+    })
+  }, [rxData])
+
+  // const data = {
+  //   datasets: Array.from(Object.keys(rxData), (key, i) => {
+  //     return {
+  //       label: key,
+  //       backgroundColor: colors[i],
+  //       borderColor: colors[i],
+  //       data: rxData[key],
+  //       fill: false,
+  //     }
+  //   }),
+  // }
+
+  //const options = useCallback(() => { return {
+  const options = {
+    animation: false,
+    parsing: false, //Important: datasets must be array of objects with x and y key-value pairs
+    maintainAspectRatio: false,
+    responsive: true,
+    datasets: {
+      line: {
+        pointRadius: 0,
+      }
     },
-    options: {
-      animation: false,
-      parsing: false, //Important: datasets must be array of objects with x and y key-value pairs
-      maintainAspectRatio: false,
-      responsive: true,
-      datasets: {
-        line: {
-          pointRadius: 0,
-        }
+    plugins: {
+      legend: {
+        labels: {
+          color: "white",
+        },
+        align: "end",
+        position: "bottom",
       },
-      plugins: {
-        legend: {
-          labels: {
-            color: "white",
+      title: {
+        display: false,
+        text: title,
+        fontColor: "white",
+      },
+      tooltip: {
+        mode: "index",
+        intersect: false,
+      },
+    },
+    hover: {
+      mode: "nearest",
+      intersect: true,
+    },
+    scales: {
+      xAxis: {
+        type: "linear",
+        grace: "2%",
+        display: true,
+        //suggestedMin: 0,
+        suggestedMax: 1,
+        ticks: {
+          color: "rgba(255,255,255,.7)",
+          display: true,
+          stepSize: 0.1, //interval between ticks
+          //precision: 2,
+          //labels: xAxisLabels,
+          
+          callback: function(value, index, ticks) {
+            return value.toFixed(2);
           },
-          align: "end",
-          position: "bottom",
         },
         title: {
+          display: true,
+          text: xAxisLabel,
+          color: "white",
+        },
+        grid: {
           display: false,
-          text: title,
-          fontColor: "white",
-        },
-        tooltip: {
-          mode: "index",
-          intersect: false,
+          borderDash: [2],
+          borderDashOffset: [2],
+          color: "rgba(33, 37, 41, 0.3)",
+          zeroLineColor: "rgba(0, 0, 0, 0)",
+          zeroLineBorderDash: [2],
+          zeroLineBorderDashOffset: [2],
         },
       },
-      hover: {
-        mode: "nearest",
-        intersect: true,
-      },
-      scales: {
-        xAxis: {
-          type: "linear",
-          grace: "2%",
-          display: true,
-          //suggestedMin: 0,
-          suggestedMax: 1,
-          ticks: {
-            color: "rgba(255,255,255,.7)",
-            display: true,
-            stepSize: 0.1, //interval between ticks
-            //precision: 2,
-            //labels: xAxisLabels,
-            
-            callback: function(value, index, ticks) {
-              return value.toFixed(2);
-            },
-          },
-          title: {
-            display: true,
-            text: xAxisLabel,
-            color: "white",
-          },
-          grid: {
-            display: false,
-            borderDash: [2],
-            borderDashOffset: [2],
-            color: "rgba(33, 37, 41, 0.3)",
-            zeroLineColor: "rgba(0, 0, 0, 0)",
-            zeroLineBorderDash: [2],
-            zeroLineBorderDashOffset: [2],
-          },
+      yAxis:{
+        grace: "2%",
+        ticks: {
+          color: "rgba(255,255,255,.7)",
+          stepSize: 1,
         },
-        yAxis:{
-          grace: "2%",
-          ticks: {
-            color: "rgba(255,255,255,.7)",
-            stepSize: 1,
-          },
+        display: true,
+        title: {
           display: true,
-          title: {
-            display: true,
-            text: yAxisLabel,
-            color: "white",
-          },
-          grid: {
-            borderDash: [3],
-            borderDashOffset: [3],
-            drawBorder: false,
-            color: "rgba(255, 255, 255, 0.15)",
-            zeroLineColor: "rgba(33, 37, 41, 0)",
-            zeroLineBorderDash: [2],
-            zeroLineBorderDashOffset: [2],
-          },
+          text: yAxisLabel,
+          color: "white",
+        },
+        grid: {
+          borderDash: [3],
+          borderDashOffset: [3],
+          drawBorder: false,
+          color: "rgba(255, 255, 255, 0.15)",
+          zeroLineColor: "rgba(33, 37, 41, 0)",
+          zeroLineBorderDash: [2],
+          zeroLineBorderDashOffset: [2],
         },
       },
     },
-  };
-
-
-  // config.data.datasets = Array.from(Object.keys(displayData), (key, i) => {
-  //   return {
-  //     label: key,
-  //     backgroundColor: colors[i],
-  //     borderColor: colors[i],
-  //     data: displayData[key],
-  //     fill: false,
-  //   }
-  // });
-
-
-  //React.useEffect(() => {
-    // let i = 0;
-    // for (const key in displayData){
-    //   config.data.datasets.push({
-    //     label: key,
-    //     backgroundColor: colors[i],
-    //     borderColor: colors[i],
-    //     data: displayData[key],
-    //     fill: false,
-        
-    //   });
-    //   i++;
-    // }
-    
-    //let ctx = document.getElementById("line-chart").getContext("2d");
-    //const myChart = new ChartJS(ctx, config);
-  //});
-
-  // console.log("Plot Datasets: ");
-  // console.log(config.data.datasets);
+  }
 
   return (
     <>
@@ -214,7 +244,7 @@ const CardLineChart = ({
           {/* ChartJS */}
           <div className="relative h-350-px">
             {/* <canvas id="line-chart"></canvas> */}
-            <Line options={config.options} data={config.data} />
+            <Line options={options} data={data} />
           </div>
         </div>
       </div>
@@ -227,7 +257,7 @@ CardLineChart.propTypes = {
   subTitle: PropTypes.string,
   yAxisLabel : PropTypes.string,
   xAxisLabel : PropTypes.string,
-  displayData : PropTypes.objectOf(PropTypes.array),
+  //displayData : PropTypes.objectOf(PropTypes.array),
   //xAxisLabels : PropTypes.array,
 };
 

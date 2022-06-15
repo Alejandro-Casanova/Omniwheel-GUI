@@ -1,7 +1,8 @@
 import React, { useCallback, useReducer } from "react";
 import PropTypes from "prop-types";
 import Input from "./Input";
-import { useStore } from "../WebSocketStore/WebSocketStore.js";
+import useWebSocket from "../WebSocketStore/useWebSocket";
+//import { useStore } from "../WebSocketStore/WebSocketStore.js";
 
 const initialState = {
     x_value: "",
@@ -25,14 +26,15 @@ const CartesianForm = ({
     
 
 }) => {
-    const {setTxCmdData} = useStore();
+    //const {setTxCmdData} = useStore();
 
     const [state, dispatch] = useReducer(reducer, initialState);
+    const [_dispatch_txData] = useWebSocket();
 
     const handleSubmit = (e) => {
         //alert('Your favorite flavor is: ' + this.state.value);
         console.log("Submited state: %s", JSON.stringify(state));
-        setTxCmdData({
+        _dispatch_txData({
             command_type: cmd_name,
             rw: "w",
             value1: state.x_value,

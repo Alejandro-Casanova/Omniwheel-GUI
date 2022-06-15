@@ -10,20 +10,22 @@ import CardLineChart from "../components/Cards/Charts/CardLineChart.js";
 import CardScatterChart from "../components/Cards/Charts/CardScatterChart.js";
 //import CartesianForm from "../components/Input/CartesianForm.js";
 
-import { useStore } from "../components/WebSocketStore/WebSocketStore.js";
+//import { useStore } from "../components/WebSocketStore/WebSocketStore.js";
 import FormSelector from "../components/Input/FormSelector.js";
 
 const Dashboard = () => {
-    const {rxData} = useStore();
+    //const {rxData} = useStore();
   return (
     //<Layout>
     <>
         <div className="flex flex-wrap">
             <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
-                <CardLineChart title="Velocity Data" subTitle="3D Components" displayData={rxData.velData} />
+                <CardLineChart title="Velocity Data" subTitle="3D Components" />
+                {/* <CardLineChart title="Velocity Data" subTitle="3D Components" displayData={rxData.velData} /> */}
             </div>
             <div className="w-full xl:w-6/12 px-4">
-                <CardScatterChart title="Position Data" subTitle="2D Plane" displayData={{"Robot Position": rxData.posData}}/>
+                {/* <CardScatterChart title="Position Data" subTitle="2D Plane" displayData={{"Robot Position": rxData.posData}}/> */}
+                <CardScatterChart title="Position Data" subTitle="2D Plane" initialDisplayData={{"Robot Position": []}} />
             </div>
         </div>
         <div className="flex flex-row flex-wrap mt-4 ">

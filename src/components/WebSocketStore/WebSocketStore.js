@@ -6,21 +6,34 @@ const URL = "ws://localhost:8080/ws"
 // CONTEXT HANDLING - STORE ///////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 
-export const wsContext = createContext();
-wsContext.displayName = 'WebSocketContext';
+const storeContext = createContext();
+storeContext.displayName = 'StoreContext';
 
 // HOC - HIGH ORDER COMPONENT (check react docs for more info) ACTS AS WRAPPER
 // Used in gatsby-browser.jsx
 export const withStore = ({element}) => {
   return(
-    <WebSocketStore>
+    <MyStore>
       {element}
-    </WebSocketStore>
+    </MyStore>
   ) 
 }
 
 export const useStore = () => {
-  return React.useContext(wsContext);
+  return React.useContext(storeContext);
+}
+
+const MyStore = ({children}) => {
+
+  return (
+    <storeContext.Provider value={{
+      // rxData: rxData,
+      // setConnectionData: setConnectionData,
+      // setTxCmdData: setTxCmdData
+    }}>
+      {children}
+    </storeContext.Provider>
+  )  
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -117,7 +130,7 @@ const rxDataReducer = (state, action) => {
 
 const WebSocketStore = ({children}) => {
 
-  const [rxData, dispatch_rxData] = React.useReducer(rxDataReducer, initialRxData, initRxData)
+  const [rxData, dispatch_rxData] = React.useReducer(rxDataReducer, {...initialRxData}, initRxData)
 
   const [connectionData, setConnectionData] = React.useState({
     ip: "",
@@ -259,12 +272,12 @@ const WebSocketStore = ({children}) => {
   }, [txCmddData]);
 
   return (
-    <wsContext.Provider value={{
-      rxData: rxData,
-      setConnectionData: setConnectionData,
-      setTxCmdData: setTxCmdData
+    <storeContext.Provider value={{
+      // rxData: rxData,
+      // setConnectionData: setConnectionData,
+      // setTxCmdData: setTxCmdData
     }}>
       {children}
-    </wsContext.Provider>
+    </storeContext.Provider>
   )  
 }
