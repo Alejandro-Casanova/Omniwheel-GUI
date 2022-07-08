@@ -1919,6 +1919,10 @@ select {
   outline-offset: 2px;
 }
 
+.outline-none-overide {  
+  box-shadow: none !important;
+}
+
 .focus\:outline-none:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;

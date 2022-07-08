@@ -36,6 +36,13 @@ const txDataReducer = (state, action) => {
       console.log(action)
       return null;
     }
+
+    // Checks if message object has a "data_type" key
+    if(!('msg_type' in action)){
+        console.log("Missing msg_type")
+        console.log(action)
+        return null
+      }
   
     // Checks if message object has a "data_type" key
     if(!('command_type' in action)){
@@ -60,6 +67,7 @@ const txDataReducer = (state, action) => {
   
     return action;
 }
+
 
 const useWebSocket = (
     rxDataReducer = defaultRxDataReducer, 

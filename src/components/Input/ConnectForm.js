@@ -52,7 +52,7 @@ const ConnectForm = () => {
             </div>
             {/* <div className=""></div> */}
             <div className="relative flex justify-center lg:flex-initial m-4 pt-2.5">
-                <button type="submit" className="
+                <button type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on right" className="
                     
                     place-self-center
                     py-2.5 px-4

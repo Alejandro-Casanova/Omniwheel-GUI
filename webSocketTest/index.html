@@ -37,29 +37,48 @@ const onClick = () => {
   }
 }
 const myTimer = () => {
-  let messagePos = {
-    pos:[
-      10 * sineWave(timeCount_ms/1000.0, 0.061, Math.PI/2.0),
-      10 * sineWave(timeCount_ms/1000.0, 0.037, Math.PI/2.0)
-    ],
-    data_type: "POS"
-  };
-  let messageVel = {
+  // let messagePos = {
+  //   pos:[
+  //     10 * sineWave(timeCount_ms/1000.0, 0.061, Math.PI/2.0),
+  //     10 * sineWave(timeCount_ms/1000.0, 0.037, Math.PI/2.0)
+  //   ],
+  //   data_type: "POS"
+  // };
+  // let messageVel = {
+  //   tiempo: timeCount_ms / 1000.0,
+  //   vel:[
+  //     amplitude * sineWave(timeCount_ms/1000.0, frequency, 0), 
+  //     amplitude * sineWave(timeCount_ms/1000.0, frequency, 2.0*Math.PI/3.0), 
+  //     amplitude * sineWave(timeCount_ms/1000.0, frequency, 4.0*Math.PI/3.0)
+  //   ],
+  //   data_type: "VEL"
+  // };
+
+  let message = {
     tiempo: timeCount_ms / 1000.0,
     vel:[
       amplitude * sineWave(timeCount_ms/1000.0, frequency, 0), 
       amplitude * sineWave(timeCount_ms/1000.0, frequency, 2.0*Math.PI/3.0), 
       amplitude * sineWave(timeCount_ms/1000.0, frequency, 4.0*Math.PI/3.0)
     ],
-    data_type: "VEL"
+    pos:[
+      10 * sineWave(timeCount_ms/1000.0, 0.061, Math.PI/2.0),
+      10 * sineWave(timeCount_ms/1000.0, 0.037, Math.PI/2.0)
+    ],
+    msg_type: "test"
   };
 
-  console.log("Message Objects to send:");
-  console.log(messagePos);
-  console.log(messageVel);
+  // console.log("Message Objects to send:");
+  // console.log(messagePos);
+  // console.log(messageVel);
   
-  ws.send(JSON.stringify(messagePos));
-  ws.send(JSON.stringify(messageVel));
+  // ws.send(JSON.stringify(messagePos));
+  // ws.send(JSON.stringify(messageVel));
+  // timeCount_ms = timeCount_ms + interval_ms;
+
+  console.log("Message Object to send:", message);
+  
+  ws.send(JSON.stringify(message));
   timeCount_ms = timeCount_ms + interval_ms;
 }
 

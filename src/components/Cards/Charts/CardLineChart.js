@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useMemo, useCallback, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,7 +14,8 @@ import {
 import PropTypes from "prop-types";
 //simport { prototype } from "keyv";
 import { Line } from 'react-chartjs-2';
-import reconnectingWebSocket from "../../WebSocketStore/reconnectingWebSocket";
+import useWebSocket from "../../WebSocketStore/useWebSocket";
+import defaultMessage from "../../WebSocketStore/defaultMessage";
 
 ChartJS.register(
   CategoryScale,
@@ -31,12 +32,20 @@ const colors = ["yellow", "magenta", "cyan", "red", "blue", "green"];
 
 // RX DATA ////////////////////////////////////////////////////////////////////////
 
-const initRxData = (intialVal) => {
-  return {
-    xVel: [intialVal], 
-    yVel: [intialVal], 
-    zVel: [intialVal],
+// const initialDisplayData = (intialVal) => {
+//   return {
+//     xVel: [intialVal], 
+//     yVel: [intialVal], 
+//     zVel: [intialVal],
+//   }
+// }
+
+const initRxData = (intialVal) =>  {
+  if(typeof intialVal !== 'object' && intialVal.constructor !== Object){
+      return intialVal;
   }
+  
+  return {...intialVal}
 }
 
 const rxDataReducer = (state, action) => {
@@ -60,14 +69,16 @@ const rxDataReducer = (state, action) => {
   }
 
   // Checks if message object has a "data_type" key
-  if(!('data_type' in action_parsed)){
-    console.log("Missing data_type")
-    console.log(action_parsed)
-    return clonedData
-  }
+  // if(!('data_type' in action_parsed)){
+  //   console.log("Missing data_type")
+  //   console.log(action_parsed)
+  //   return clonedData
+  // }
 
   // Process message object
-  if(action_parsed.data_type === 'VEL'){
+  //if(action_parsed.data_type === 'VEL'){
+  try {
+
     if(clonedData.xVel.length >= 50){
       clonedData.xVel.shift();
       clonedData.yVel.shift();
@@ -76,9 +87,13 @@ const rxDataReducer = (state, action) => {
     clonedData.xVel.push({x: action_parsed.tiempo, y: action_parsed.vel[0]});
     clonedData.yVel.push({x: action_parsed.tiempo, y: action_parsed.vel[1]});
     clonedData.zVel.push({x: action_parsed.tiempo, y: action_parsed.vel[2]});
-  }else{
-    console.log("Unknown data type: %s", action_parsed.data_type)
+
+  } catch (error) {
+    console.log("Error: ", error, " - Message ", action_parsed);
   }
+  // }else{
+  //   console.log("Unknown data type: %s", action_parsed.data_type)
+  // }
 
   return clonedData;
 }
@@ -90,37 +105,49 @@ const CardLineChart = ({
   subTitle = "Default Subtitle",
   yAxisLabel = "Value",
   xAxisLabel = "time (s)",
-  //displayData = {default: [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2}, {x: 3, y: 3}, {x: 4, y: 4}, {x: 5, y: 5}]},
+  initialDisplayData = {xVel: [], yVel: [], zVel: []},
   //xAxisLabels = [0, 1, 2, 3, 4, 5]
 }) => {
 
-  const ws = useRef();
-  const [rxData, dispatch_rxData] = React.useReducer(rxDataReducer, 0, initRxData)
-  const [data, setData] = useState({datasets:[]});
+  // const ws = useRef();
+  // const [rxData, dispatch_rxData] = React.useReducer(rxDataReducer, 0, initRxData)
+  // const [data, setData] = useState({datasets:[]});
 
-  useEffect(() => {
-    ws.current = reconnectingWebSocket();
-    ws.current.on(dispatch_rxData);
+  const [_dispatch_txData, _rxData] = useWebSocket(rxDataReducer, initialDisplayData, initRxData);
+  const [_data, _setData] = useState({datasets:[]});
+
+  // useEffect(() => {
+  //   ws.current = reconnectingWebSocket();
+  //   ws.current.on(dispatch_rxData);
     
+  //   return () => {
+  //     ws.current.off(dispatch_rxData);
+  //     ws.current.close();
+  //   }
+  // }, []);
+
+  // Subscribe to relevant data
+  useEffect(() => {
+    _dispatch_txData({...defaultMessage, msg_type: "subscribe", sub_id: 0, sub_data_type: "velocity"});
+
     return () => {
-      ws.current.off(dispatch_rxData);
-      ws.current.close();
+    _dispatch_txData({...defaultMessage, msg_type: "unsubscribe", sub_id: 0, sub_data_type: "velocity"});    
     }
-  }, []);
+}, [_dispatch_txData]);
   
   useEffect(() => {
-    setData({
-      datasets: Array.from(Object.keys(rxData), (key, i) => {
+    _setData({
+      datasets: Array.from(Object.keys(_rxData), (key, i) => {
         return {
           label: key,
           backgroundColor: colors[i],
           borderColor: colors[i],
-          data: rxData[key],
+          data: _rxData[key],
           fill: false,
         }
       }),
     })
-  }, [rxData])
+  }, [_rxData])
 
   // const data = {
   //   datasets: Array.from(Object.keys(rxData), (key, i) => {
@@ -244,7 +271,7 @@ const CardLineChart = ({
           {/* ChartJS */}
           <div className="relative h-350-px">
             {/* <canvas id="line-chart"></canvas> */}
-            <Line options={options} data={data} />
+            <Line options={options} data={_data} />
           </div>
         </div>
       </div>
@@ -257,7 +284,7 @@ CardLineChart.propTypes = {
   subTitle: PropTypes.string,
   yAxisLabel : PropTypes.string,
   xAxisLabel : PropTypes.string,
-  //displayData : PropTypes.objectOf(PropTypes.array),
+  initialDisplayData : PropTypes.objectOf(PropTypes.array).isRequired,
   //xAxisLabels : PropTypes.array,
 };
 

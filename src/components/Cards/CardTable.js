@@ -3,14 +3,14 @@ import PropTypes from "prop-types";
 
 // components
 
-import TableDropdown from "components/Dropdowns/TableDropdown.js";
+import TableDropdown from "../Dropdowns/TableDropdown.js";
 
 export default function CardTable({ color }) {
   return (
     <>
       <div
         className={
-          "relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded " +
+          "relative flex flex-col min-w-0 break-words w-full pb-16 mb-6 shadow-lg rounded " +
           (color === "light" ? "bg-white" : "bg-lightBlue-900 text-white")
         }
       >
@@ -23,7 +23,7 @@ export default function CardTable({ color }) {
                   (color === "light" ? "text-blueGray-700" : "text-white")
                 }
               >
-                Card Tables
+                Available Units
               </h3>
             </div>
           </div>
@@ -31,7 +31,7 @@ export default function CardTable({ color }) {
         <div className="block w-full overflow-x-auto">
           {/* Projects table */}
           <table className="items-center w-full bg-transparent border-collapse">
-            <thead>
+            <thead className="sticky top-0 mb-4">
               <tr>
                 <th
                   className={
@@ -41,9 +41,9 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Project
+                  Unit Id
                 </th>
-                <th
+                {/* <th
                   className={
                     "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
                     (color === "light"
@@ -52,7 +52,7 @@ export default function CardTable({ color }) {
                   }
                 >
                   Budget
-                </th>
+                </th> */}
                 <th
                   className={
                     "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
@@ -63,7 +63,7 @@ export default function CardTable({ color }) {
                 >
                   Status
                 </th>
-                <th
+                {/* <th
                   className={
                     "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
                     (color === "light"
@@ -72,7 +72,7 @@ export default function CardTable({ color }) {
                   }
                 >
                   Users
-                </th>
+                </th> */}
                 <th
                   className={
                     "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
@@ -81,7 +81,7 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  Completion
+                  Battery
                 </th>
                 <th
                   className={
@@ -93,11 +93,11 @@ export default function CardTable({ color }) {
                 ></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="h-40">
               <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <img
-                    src={require("assets/img/bootstrap.jpg").default}
+                    src={require("../../assets/img/arduino-mkr-wifi-1010.jpg").default}
                     className="h-12 w-12 bg-white rounded-full border"
                     alt="..."
                   ></img>{" "}
@@ -107,39 +107,39 @@ export default function CardTable({ color }) {
                       +(color === "light" ? "text-blueGray-600" : "text-white")
                     }
                   >
-                    Argon Design System
+                    Omniwheel 1
                   </span>
                 </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   $2,500 USD
-                </td>
+                </td> */}
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-circle text-orange-500 mr-2"></i> pending
+                  <i className="fas fa-circle text-green-500 mr-2"></i> online
                 </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex">
                     <img
-                      src={require("assets/img/team-1-800x800.jpg").default}
+                      src={require("../../assets/img/team-1-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
                     ></img>
                     <img
-                      src={require("assets/img/team-2-800x800.jpg").default}
+                      src={require("../../assets/img/team-2-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                     <img
-                      src={require("assets/img/team-3-800x800.jpg").default}
+                      src={require("../../assets/img/team-3-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                     <img
-                      src={require("assets/img/team-4-470x470.png").default}
+                      src={require("../../assets/img/team-4-470x470.png").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                   </div>
-                </td>
+                </td> */}
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex items-center">
                     <span className="mr-2">60%</span>
@@ -147,7 +147,7 @@ export default function CardTable({ color }) {
                       <div className="overflow-hidden h-2 text-xs flex rounded bg-red-200">
                         <div
                           style={{ width: "60%" }}
-                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"
+                          className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-orange-500"
                         ></div>
                       </div>
                     </div>
@@ -160,7 +160,7 @@ export default function CardTable({ color }) {
               <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <img
-                    src={require("assets/img/angular.jpg").default}
+                    src={require("../../assets/img/omniwheel1.jpg").default}
                     className="h-12 w-12 bg-white rounded-full border"
                     alt="..."
                   ></img>{" "}
@@ -170,40 +170,40 @@ export default function CardTable({ color }) {
                       +(color === "light" ? "text-blueGray-600" : "text-white")
                     }
                   >
-                    Angular Now UI Kit PRO
+                    Omniwheel 2
                   </span>
                 </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   $1,800 USD
-                </td>
+                </td> */}
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  <i className="fas fa-circle text-emerald-500 mr-2"></i>{" "}
-                  completed
+                  <i className="fas fa-circle text-red-500 mr-2"></i>{" "}
+                  offline
                 </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex">
                     <img
-                      src={require("assets/img/team-1-800x800.jpg").default}
+                      src={require("../../assets/img/team-1-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
                     ></img>
                     <img
-                      src={require("assets/img/team-2-800x800.jpg").default}
+                      src={require("../../assets/img/team-2-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                     <img
-                      src={require("assets/img/team-3-800x800.jpg").default}
+                      src={require("../../assets/img/team-3-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                     <img
-                      src={require("assets/img/team-4-470x470.png").default}
+                      src={require("../../assets/img/team-4-470x470.png").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                   </div>
-                </td>
+                </td> */}
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex items-center">
                     <span className="mr-2">100%</span>
@@ -221,10 +221,10 @@ export default function CardTable({ color }) {
                   <TableDropdown />
                 </td>
               </tr>
-              <tr>
+              {/* <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <img
-                    src={require("assets/img/sketch.jpg").default}
+                    src={require("../../assets/img/sketch.jpg").default}
                     className="h-12 w-12 bg-white rounded-full border"
                     alt="..."
                   ></img>{" "}
@@ -237,37 +237,37 @@ export default function CardTable({ color }) {
                     Black Dashboard Sketch
                   </span>
                 </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   $3,150 USD
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                </td> */}
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <i className="fas fa-circle text-red-500 mr-2"></i> delayed
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                </td> */}
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex">
                     <img
-                      src={require("assets/img/team-1-800x800.jpg").default}
+                      src={require("../../assets/img/team-1-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
                     ></img>
                     <img
-                      src={require("assets/img/team-2-800x800.jpg").default}
+                      src={require("../../assets/img/team-2-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                     <img
-                      src={require("assets/img/team-3-800x800.jpg").default}
+                      src={require("../../assets/img/team-3-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                     <img
-                      src={require("assets/img/team-4-470x470.png").default}
+                      src={require("../../assets/img/team-4-470x470.png").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                   </div>
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                </td> */}
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex items-center">
                     <span className="mr-2">73%</span>
                     <div className="relative w-full">
@@ -287,7 +287,7 @@ export default function CardTable({ color }) {
               <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <img
-                    src={require("assets/img/react.jpg").default}
+                    src={require("../../assets/img/react.jpg").default}
                     className="h-12 w-12 bg-white rounded-full border"
                     alt="..."
                   ></img>{" "}
@@ -299,45 +299,45 @@ export default function CardTable({ color }) {
                   >
                     React Material Dashboard
                   </span>
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                </th> */}
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   $4,400 USD
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                </td> */}
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <i className="fas fa-circle text-teal-500 mr-2"></i> on
                   schedule
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                </td> */}
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex">
                     <img
-                      src={require("assets/img/team-1-800x800.jpg").default}
+                      src={require("../../assets/img/team-1-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
                     ></img>
                     <img
-                      src={require("assets/img/team-2-800x800.jpg").default}
+                      src={require("../../assets/img/team-2-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                     <img
-                      src={require("assets/img/team-3-800x800.jpg").default}
+                      src={require("../../assets/img/team-3-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                     <img
-                      src={require("assets/img/team-4-470x470.png").default}
+                      src={require("../../assets/img/team-4-470x470.png").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                   </div>
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                </td> */}
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex items-center">
-                    <span className="mr-2">90%</span>
+                    <span className="mr-2">80%</span>
                     <div className="relative w-full">
                       <div className="overflow-hidden h-2 text-xs flex rounded bg-teal-200">
                         <div
-                          style={{ width: "90%" }}
+                          style={{ width: "80%" }}
                           className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-teal-500"
                         ></div>
                       </div>
@@ -351,7 +351,7 @@ export default function CardTable({ color }) {
               <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <img
-                    src={require("assets/img/vue.jpg").default}
+                    src={require("../../assets/img/vue.jpg").default}
                     className="h-12 w-12 bg-white rounded-full border"
                     alt="..."
                   ></img>{" "}
@@ -363,38 +363,38 @@ export default function CardTable({ color }) {
                   >
                     React Material Dashboard
                   </span>
-                </th>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                </th> */}
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   $2,200 USD
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                </td> */}
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <i className="fas fa-circle text-emerald-500 mr-2"></i>{" "}
                   completed
-                </td>
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                </td> */}
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex">
                     <img
-                      src={require("assets/img/team-1-800x800.jpg").default}
+                      src={require("../../assets/img/team-1-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow"
                     ></img>
                     <img
-                      src={require("assets/img/team-2-800x800.jpg").default}
+                      src={require("../../assets/img/team-2-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                     <img
-                      src={require("assets/img/team-3-800x800.jpg").default}
+                      src={require("../../assets/img/team-3-800x800.jpg").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                     <img
-                      src={require("assets/img/team-4-470x470.png").default}
+                      src={require("../../assets/img/team-4-470x470.png").default}
                       alt="..."
                       className="w-10 h-10 rounded-full border-2 border-blueGray-50 shadow -ml-4"
                     ></img>
                   </div>
-                </td>
+                </td> */}{/*
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex items-center">
                     <span className="mr-2">100%</span>
@@ -411,7 +411,7 @@ export default function CardTable({ color }) {
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
                   <TableDropdown />
                 </td>
-              </tr>
+              </tr> */}
             </tbody>
           </table>
         </div>

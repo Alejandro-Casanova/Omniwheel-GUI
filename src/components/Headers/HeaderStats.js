@@ -2,7 +2,8 @@ import React from "react";
 
 // components
 
-import CardStats from "../Cards/CardStats.js";
+// import CardStats from "../Cards/CardStats.js";
+// import CardTable from "../Cards/CardTable.js";
 
 export default function HeaderStats() {
   return (
@@ -13,6 +14,11 @@ export default function HeaderStats() {
           <div>
             {/* Card stats */}
             <div className="flex flex-wrap">
+              <div className="w-full px-4">
+                {/* <CardTable color="dark" /> */}
+              </div>
+            </div>
+            {/* <div className="flex flex-wrap">
               <div className="w-full lg:w-6/12 xl:w-3/12 px-4">
                 <CardStats
                   statSubtitle="TRAFFIC"
@@ -61,7 +67,7 @@ export default function HeaderStats() {
                   statIconColor="bg-lightBlue-500"
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
