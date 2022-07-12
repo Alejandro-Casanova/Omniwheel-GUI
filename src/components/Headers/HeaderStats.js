@@ -3,7 +3,7 @@ import React from "react";
 // components
 
 // import CardStats from "../Cards/CardStats.js";
-// import CardTable from "../Cards/CardTable.js";
+// import DeviceTable from "../Cards/DeviceTable.js";
 
 export default function HeaderStats() {
   return (
@@ -15,7 +15,7 @@ export default function HeaderStats() {
             {/* Card stats */}
             <div className="flex flex-wrap">
               <div className="w-full px-4">
-                {/* <CardTable color="dark" /> */}
+                {/* <DeviceTable color="dark" /> */}
               </div>
             </div>
             {/* <div className="flex flex-wrap">

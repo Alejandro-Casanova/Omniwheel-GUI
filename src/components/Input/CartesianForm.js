@@ -1,8 +1,8 @@
 import React, { useCallback, useReducer } from "react";
 import PropTypes from "prop-types";
 import Input from "./Input";
-import useWebSocket from "../WebSocketStore/useWebSocket";
-//import { useStore } from "../WebSocketStore/WebSocketStore.js";
+import useWebSocket from "../WebSocket/useWebSocket";
+//import { useStore } from "../Store/Store.jsx";
 
 const initialState = {
     x_value: "",

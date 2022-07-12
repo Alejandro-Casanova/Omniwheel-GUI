@@ -14,8 +14,8 @@ import {
 import PropTypes from "prop-types";
 //simport { prototype } from "keyv";
 import { Line } from 'react-chartjs-2';
-import useWebSocket from "../../WebSocketStore/useWebSocket";
-import defaultMessage from "../../WebSocketStore/defaultMessage";
+import useWebSocket from "../../WebSocket/useWebSocket";
+import defaultMessage from "../../WebSocket/defaultMessage";
 
 ChartJS.register(
   CategoryScale,

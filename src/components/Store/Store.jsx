@@ -1,6 +1,6 @@
 import React, {createContext, useRef, useState, useEffect} from "react";
 
-const URL = "ws://localhost:8080/ws"
+//const URL = "ws://localhost:8080/ws"
 
 ///////////////////////////////////////////////////////////////////////
 // CONTEXT HANDLING - STORE ///////////////////////////////////////////
@@ -24,9 +24,12 @@ export const useStore = () => {
 }
 
 const MyStore = ({children}) => {
-
+  const [selectedDevice, setSelectedDevice] = React.useState(null);
+  console.log("Selected device: ", selectedDevice)
   return (
     <storeContext.Provider value={{
+      selectedDevice: selectedDevice,
+      setSelectedDevice : setSelectedDevice
       // rxData: rxData,
       // setConnectionData: setConnectionData,
       // setTxCmdData: setTxCmdData

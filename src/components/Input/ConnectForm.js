@@ -1,7 +1,7 @@
 import React, { useCallback, useReducer } from "react";
 //import PropTypes from "prop-types";
 import Input from "./Input";
-//import { useStore } from "../WebSocketStore/WebSocketStore.js";
+//import { useStore } from "../Store/Store.jsx";
 
 const initialState = {
     ip: "",

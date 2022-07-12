@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import React, {Component} from "react";
 //import { Link } from "gatsby";
-import {useStore, withStore} from "../components/WebSocketStore/WebSocketStore.js"
+import {useStore, withStore} from "../components/Store/Store.jsx"
 
 //import IndexNavbar from "../components/Navbars/IndexNavbar.js";
 //import Footer from "../components/Footers/Footer.js";

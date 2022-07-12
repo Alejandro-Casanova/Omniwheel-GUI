@@ -7,7 +7,7 @@ import CardProfile from "../components/Cards/CardProfile"
 import CardSettings from "../components/Cards/CardSettings"
 import CardSocialTraffic from "../components/Cards/CardSocialTraffic"
 import CardStats from "../components/Cards/CardStats"
-import CardTable from "../components/Cards/CardTable"
+import DeviceTable from "../components/Cards/DeviceTable"
 
 import IndexDropdown from "../components/Dropdowns/IndexDropdown"
 import NotificationDropdown from "../components/Dropdowns/NotificationDropdown"
@@ -37,7 +37,7 @@ const Test = () => {
                 <CardStats />
             </div>
             <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
-                <CardTable color={"dark"}/>
+                <DeviceTable color={"dark"}/>
             </div>
             <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
                 <IndexDropdown />

@@ -13,11 +13,14 @@ const FormSelector = ({
         {cmd_name: "POSC", formName: "posc", variableName: "Position", titleText: "Robot Cartesian Position", subTitleText: ""},
     ]
 }) => {
-    const [openTab, setOpenTab] = React.useState(1);
+    const [openTab, setOpenTab] = React.useState(2);
+
+    console.log("Form Data: ", formData);
+    console.log("Forms: ", forms);
     return (
-        <>
+        // <>
         <div className="flex flex-wrap">
-            <div className="w-full">
+            <div className="w-full z-20">
                 <div
                     className="flex flex-wrap flex-row gap-2 mb-0 list-none pb-4"
                     role="tablist"
@@ -153,13 +156,14 @@ const FormSelector = ({
                 </div>
             </div>
         </div>
-        </>
+        //</>
     );
 };
 
 export default FormSelector;
   
 FormSelector.propTypes = {
-
+    forms: PropTypes.arrayOf(PropTypes.string),
+    formData: PropTypes.arrayOf(PropTypes.object)
 };
 

@@ -1,16 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-// components
+import TableItem from "./TableItem"
 
-import TableDropdown from "../Dropdowns/TableDropdown.js";
-
-export default function CardTable({ color }) {
+export default function DeviceTable({ color }) {
   return (
     <>
       <div
         className={
-          "relative flex flex-col min-w-0 break-words w-full pb-16 mb-6 shadow-lg rounded " +
+          "relative flex flex-col min-w-0 break-words w-full pb-4 mb-6 shadow-lg rounded " +
           (color === "light" ? "bg-white" : "bg-lightBlue-900 text-white")
         }
       >
@@ -28,10 +26,13 @@ export default function CardTable({ color }) {
             </div>
           </div>
         </div>
-        <div className="block w-full overflow-x-auto">
+        <div className={"block w-full overflow-x-auto"
+                        + " h-64"
+                        //+ " max-h-full"
+                        }>
           {/* Projects table */}
           <table className="items-center w-full bg-transparent border-collapse">
-            <thead className="sticky top-0 mb-4">
+            <thead className="sticky top-0 mb-4 z-10">
               <tr>
                 <th
                   className={
@@ -83,8 +84,7 @@ export default function CardTable({ color }) {
                 >
                   Battery
                 </th>
-                <th
-                  className={
+                <th className={
                     "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
@@ -93,8 +93,27 @@ export default function CardTable({ color }) {
                 ></th>
               </tr>
             </thead>
-            <tbody className="h-40">
-              <tr>
+            <tbody className="">
+              <TableItem 
+                color="dark" 
+                imageName="arduino-mkr-wifi-1010.jpg" 
+                batteryLevel={85} 
+                deviceName="Omniwheel 1" 
+                status="online"
+                deviceID={1}
+              />
+              <TableItem deviceID={2}/>
+              <TableItem 
+                color="dark" 
+                imageName="omniwheel1.jpg" 
+                batteryLevel={25} 
+                deviceName="Omniwheel 2" 
+                status="online"
+                deviceID={3}
+              />
+              <TableItem />
+              <TableItem />
+              {/* <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <img
                     src={require("../../assets/img/arduino-mkr-wifi-1010.jpg").default}
@@ -109,13 +128,13 @@ export default function CardTable({ color }) {
                   >
                     Omniwheel 1
                   </span>
-                </th>
+                </th> */}
                 {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   $2,500 USD
                 </td> */}
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <i className="fas fa-circle text-green-500 mr-2"></i> online
-                </td>
+                </td> */}
                 {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex">
                     <img
@@ -140,7 +159,7 @@ export default function CardTable({ color }) {
                     ></img>
                   </div>
                 </td> */}
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex items-center">
                     <span className="mr-2">60%</span>
                     <div className="relative w-full">
@@ -172,14 +191,14 @@ export default function CardTable({ color }) {
                   >
                     Omniwheel 2
                   </span>
-                </th>
+                </th> */}
                 {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   $1,800 USD
                 </td> */}
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <i className="fas fa-circle text-red-500 mr-2"></i>{" "}
                   offline
-                </td>
+                </td> */}
                 {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex">
                     <img
@@ -204,7 +223,7 @@ export default function CardTable({ color }) {
                     ></img>
                   </div>
                 </td> */}
-                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <div className="flex items-center">
                     <span className="mr-2">100%</span>
                     <div className="relative w-full">
@@ -220,7 +239,7 @@ export default function CardTable({ color }) {
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
                   <TableDropdown />
                 </td>
-              </tr>
+              </tr> */}
               {/* <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <img
@@ -420,10 +439,10 @@ export default function CardTable({ color }) {
   );
 }
 
-CardTable.defaultProps = {
+DeviceTable.defaultProps = {
   color: "light",
 };
 
-CardTable.propTypes = {
+DeviceTable.propTypes = {
   color: PropTypes.oneOf(["light", "dark"]),
 };

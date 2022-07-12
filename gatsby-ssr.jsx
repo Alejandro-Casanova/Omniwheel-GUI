@@ -1,7 +1,7 @@
 import "./src/css/index.css"
 import "./src/css/tailwind-mods.css"
 import React from "react"
-import { withStore } from "./src/components/WebSocketStore/WebSocketStore.js";
+import { withStore } from "./src/components/Store/Store.jsx";
 
 // Import font awesome icons. Must install package first (npm i @fortawesome/fontawesome-free)
 import "@fortawesome/fontawesome-free/css/all.min.css";

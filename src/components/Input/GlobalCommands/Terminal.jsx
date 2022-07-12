@@ -229,12 +229,16 @@ export default class Terminal extends Component {
     }
 
     return (
-      <div
+      <div 
         ref={this.terminalRoot}
+        //role="button"
+        aria-label="Console"
         name='react-console-emulator'
         className={this.props.className}
         style={styles.container}
         onClick={this.focusTerminal}
+        //aria
+        //aria-hidden="true"
       >
         {/* Content */}
         <div

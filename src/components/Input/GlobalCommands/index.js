@@ -13,6 +13,7 @@ const GlobalCommands = () => {
     
     return (
         <Terminal
+            className={"h-24"}
             commands={commands}
             welcomeMessage={'Welcome to the Omniwheel Global Commands Terminal!'}
             promptLabel={'~$'}

@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { graphql, useStaticQuery } from 'gatsby'
+//import { graphql, useStaticQuery } from 'gatsby'
 
 import {StaticImage} from "gatsby-plugin-image"
-import BackgroundImage from 'gatsby-background-image'
+//import BackgroundImage from 'gatsby-background-image'
 
 import {
   Chart as ChartJS,
@@ -15,8 +15,8 @@ import {
 
 import { Scatter } from 'react-chartjs-2';
 import PropTypes from "prop-types";
-import useWebSocket from '../../WebSocketStore/useWebSocket';
-import defaultMessage from '../../WebSocketStore/defaultMessage'
+import useWebSocket from '../../WebSocket/useWebSocket';
+import defaultMessage from '../../WebSocket/defaultMessage'
 
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
 
@@ -97,18 +97,18 @@ const CardScatter = ({
     const [_dispatch_txData, _rxData] = useWebSocket(rxDataReducer, initialDisplayData, initRxData);
     const [_data, _setData] = useState({datasets:[]});
 
-    const imageData = useStaticQuery(
-        graphql`
-            {
-                file(relativePath: {eq: "layout.png"}) {
-                    childImageSharp {
-                        id
-                        gatsbyImageData
-                    }
-                }
-            }
-        `
-    ).file.childImageSharp.fluid
+    // const imageData = useStaticQuery(
+    //     graphql`
+    //         {
+    //             file(relativePath: {eq: "layout.png"}) {
+    //                 childImageSharp {
+    //                     id
+    //                     gatsbyImageData
+    //                 }
+    //             }
+    //         }
+    //     `
+    // ).file.childImageSharp.fluid
 
     useEffect(() => {
         _setData({
@@ -245,33 +245,33 @@ const CardScatter = ({
                     </div>
                 </div>
                 </div>
-                <div className="p-4 flex-auto">
+                <div className="p-4 flex-auto h-22 aspect-square">
                 {/* ChartJS */}
                 
                     <StaticImage
                                 src="../../../assets/layouts/layout.png"
-                                data={imageData}
+                                //data={imageData}
                                 className="absolute w-full left-4 bottom-10"
                                 alt="A dinosaur"
                                 placeholder="blurred"
                                 layout="fullWidth"
                                 loading ='eager'
-                                // width={1024}
-                                // height={1024}
+                                //width={1024}
+                                //height={1024}
                     />
-                    <div    className={"relative"
+                    {/* <div    className={"relative"
                                     //+ " bg-white"
                                     //+ " aspect-video" 
                                     + " aspect-square"
                                     //+ " h-600-px"
                                     }
-                            style={{backgroundImage: "url('../../../assets/layouts/layout.png');"}}
-                    >
+                            style={{backgroundImage: "url('../../../assets/layouts/layout.png')"}}
+                    > */}
                         {/* <canvas id="line-chart"></canvas> */}
                         
                         <Scatter options={options} data={_data} />
                         
-                    </div>
+                    {/* </div> */}
                 
                 </div>
             </div>
