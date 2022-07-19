@@ -93,9 +93,9 @@ const rxDataReducer = (state, action) => {
         clonedData.velData.yVel.shift();
         clonedData.velData.zVel.shift();
       }
-      clonedData.velData.xVel.push({x: action.tiempo, y: action.vel[0]});
-      clonedData.velData.yVel.push({x: action.tiempo, y: action.vel[1]});
-      clonedData.velData.zVel.push({x: action.tiempo, y: action.vel[2]});
+      clonedData.velData.xVel.push({x: action.time, y: action.vel[0]});
+      clonedData.velData.yVel.push({x: action.time, y: action.vel[1]});
+      clonedData.velData.zVel.push({x: action.time, y: action.vel[2]});
     break;
     default: 
       console.log("Unknown command type: %s", action.cmd_type)
@@ -118,10 +118,10 @@ const rxDataReducer = (state, action) => {
 //     clonedData.posData.shift();
 //   }
 //   clonedData.messageList.push(data);
-//   clonedData.velData.xVel.push({x: data.tiempo, y: data.vel[0]});
-//   clonedData.velData.yVel.push({x: data.tiempo, y: data.vel[1]});
-//   clonedData.velData.zVel.push({x: data.tiempo, y: data.vel[2]});
-//   clonedData.timeData.push(data.tiempo);
+//   clonedData.velData.xVel.push({x: data.time, y: data.vel[0]});
+//   clonedData.velData.yVel.push({x: data.time, y: data.vel[1]});
+//   clonedData.velData.zVel.push({x: data.time, y: data.vel[2]});
+//   clonedData.timeData.push(data.time);
 //   clonedData.posData.push({x: data.pos[0], y: data.pos[1]});
 
 //   return clonedData;

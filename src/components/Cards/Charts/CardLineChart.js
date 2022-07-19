@@ -6,8 +6,8 @@ import {
   PointElement,
   LineElement,
   //Title,
-  //Tooltip,
-  //Legend,
+  Tooltip,
+  Legend,
   LineController
 } from 'chart.js';
 
@@ -15,7 +15,7 @@ import PropTypes from "prop-types";
 //simport { prototype } from "keyv";
 import { Line } from 'react-chartjs-2';
 import useWebSocket from "../../WebSocket/useWebSocket";
-import defaultMessage from "../../WebSocket/defaultMessage";
+//import defaultMessage from "../../WebSocket/defaultMessage";
 
 ChartJS.register(
   CategoryScale,
@@ -23,8 +23,8 @@ ChartJS.register(
   PointElement,
   LineElement,
   //Title,
-  //Tooltip,
-  //Legend,
+  Tooltip,
+  Legend,
   LineController
 );
 
@@ -40,12 +40,17 @@ const colors = ["yellow", "magenta", "cyan", "red", "blue", "green"];
 //   }
 // }
 
-const initRxData = (intialVal) =>  {
-  if(typeof intialVal !== 'object' && intialVal.constructor !== Object){
-      return intialVal;
+const initRxData = (initialVal) =>  {
+
+  if(initialVal === null ){
+    return {xVel: [], yVel: [], zVel: []};
+  }
+
+  if(typeof initialVal !== 'object' && initialVal.constructor !== Object){
+      return initialVal;
   }
   
-  return {...intialVal}
+  return {...initialVal}
 }
 
 const rxDataReducer = (state, action) => {
@@ -55,7 +60,7 @@ const rxDataReducer = (state, action) => {
   if (typeof action === 'string' || action instanceof String){
     if(action === 'reset'){
       console.log("Reset achieved");
-      return initRxData(0)
+      return initRxData(null)
     }
   }
 
@@ -68,6 +73,8 @@ const rxDataReducer = (state, action) => {
     return clonedData;
   }
 
+  
+
   // Checks if message object has a "data_type" key
   // if(!('data_type' in action_parsed)){
   //   console.log("Missing data_type")
@@ -78,15 +85,34 @@ const rxDataReducer = (state, action) => {
   // Process message object
   //if(action_parsed.data_type === 'VEL'){
   try {
+    if(action_parsed.msg_type !== "data"){
+      throw new Error("Msg type is NOT data");
+    }else if(action_parsed.payload.data_type !== "velocity"){
+      throw new Error("Data type is NOT velocity");
+    }
 
-    if(clonedData.xVel.length >= 50){
+    const payload_data = action_parsed.payload.data;
+    // If received array (many points)
+    if(Array.isArray(payload_data)){
+      payload_data.forEach((value) => {
+        clonedData.xVel.push({x: value.time, y: value.vel[0]});
+        clonedData.yVel.push({x: value.time, y: value.vel[1]});
+        clonedData.zVel.push({x: value.time, y: value.vel[2]});
+      })
+    }else{
+      // Not array (Single Object)
+      clonedData.xVel.push({x: payload_data.time, y: payload_data.vel[0]});
+      clonedData.yVel.push({x: payload_data.time, y: payload_data.vel[1]});
+      clonedData.zVel.push({x: payload_data.time, y: payload_data.vel[2]});
+    }
+
+    // Remove excess elements
+    while(clonedData.xVel.length >= 50){
       clonedData.xVel.shift();
       clonedData.yVel.shift();
       clonedData.zVel.shift();
     }
-    clonedData.xVel.push({x: action_parsed.tiempo, y: action_parsed.vel[0]});
-    clonedData.yVel.push({x: action_parsed.tiempo, y: action_parsed.vel[1]});
-    clonedData.zVel.push({x: action_parsed.tiempo, y: action_parsed.vel[2]});
+    
 
   } catch (error) {
     console.log("Error: ", error, " - Message ", action_parsed);
@@ -100,22 +126,22 @@ const rxDataReducer = (state, action) => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////77
 
-const CardLineChart = ({
+export default function CardLineChart({
   title = "Default Title",
   subTitle = "Default Subtitle",
   yAxisLabel = "Value",
   xAxisLabel = "time (s)",
-  initialDisplayData = {xVel: [], yVel: [], zVel: []},
+  deviceId = null,
+  //initialDisplayData = {xVel: [], yVel: [], zVel: []},
   //xAxisLabels = [0, 1, 2, 3, 4, 5]
-}) => {
+}) {
 
   // const ws = useRef();
   // const [rxData, dispatch_rxData] = React.useReducer(rxDataReducer, 0, initRxData)
   // const [data, setData] = useState({datasets:[]});
-
-  const [_dispatch_txData, _rxData] = useWebSocket(rxDataReducer, initialDisplayData, initRxData);
+  const [_dispatch_txData, _rxData] = useWebSocket(rxDataReducer, null, initRxData);
   const [_data, _setData] = useState({datasets:[]});
-
+  //console.log("CARDLINE STORE: ", deviceId);
   // useEffect(() => {
   //   ws.current = reconnectingWebSocket();
   //   ws.current.on(dispatch_rxData);
@@ -128,12 +154,17 @@ const CardLineChart = ({
 
   // Subscribe to relevant data
   useEffect(() => {
-    _dispatch_txData({...defaultMessage, msg_type: "subscribe", sub_id: 0, sub_data_type: "velocity"});
+    if( deviceId === null || deviceId === undefined ){
+      return;
+    }
+    //console.log("DISPATCHED: ", deviceId);
+
+    _dispatch_txData({msg_type: "subscribe", payload: {device_id: deviceId, data_type: "velocity"} });
 
     return () => {
-    _dispatch_txData({...defaultMessage, msg_type: "unsubscribe", sub_id: 0, sub_data_type: "velocity"});    
+      _dispatch_txData({msg_type: "unsubscribe", payload: {device_id: deviceId, data_type: "velocity"} });    
     }
-}, [_dispatch_txData]);
+}, [_dispatch_txData, deviceId]);
   
   useEffect(() => {
     _setData({
@@ -284,8 +315,9 @@ CardLineChart.propTypes = {
   subTitle: PropTypes.string,
   yAxisLabel : PropTypes.string,
   xAxisLabel : PropTypes.string,
-  initialDisplayData : PropTypes.objectOf(PropTypes.array).isRequired,
+  deviceID : PropTypes.number,
+  //initialDisplayData : PropTypes.objectOf(PropTypes.array).isRequired,
   //xAxisLabels : PropTypes.array,
 };
 
-export default CardLineChart;
+//export default CardLineChart;

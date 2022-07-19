@@ -1,9 +1,87 @@
-import React from "react";
+import React, {useEffect} from "react";
 import PropTypes from "prop-types";
+import useWebSocket from "../../WebSocket/useWebSocket";
 
 import TableItem from "./TableItem"
 
+const initRxData = (intialVal) =>  {
+ 
+  if( intialVal === null){
+    return {};
+  }
+
+  return {};
+ 
+}
+
+const rxDataReducer = (state, action) => {
+
+  const clonedData = {...state}; // Prevents state mutation (indispensable)
+  //const clonedData = state.slice();
+
+  console.log("State: ", state)
+  console.log("Action: ", action)
+  
+  //const action_parsed = JSON.parse(action)
+  let action_parsed;
+  try {
+      action_parsed = JSON.parse(action)
+  } catch (error) {
+      console.log("Invalid JSON string: %s", action);
+  }
+
+  console.log("Action Parsed: ", action_parsed)
+
+  try {
+
+    const data_type = action_parsed.payload.data_type;
+    const device_id = action_parsed.payload.device_id;
+
+    // Checks if message is an object
+    if(typeof action_parsed !== 'object' && action.constructor !== Object){
+      throw new Error("Device Table Reducer: Not an Object");
+    }
+
+    if(clonedData[device_id] === undefined){
+      clonedData[device_id] = {
+          info: {
+            name:"unknown",
+            type:"unknown",
+          },
+          status: {
+            connection: "unknown",
+            battery: 0,
+          },
+      }
+    }
+    
+    if( data_type !== "info" && data_type !== "status"){
+      throw new Error("DeviceTable Reducer: Unexpected Data Type");
+    }
+    
+    clonedData[device_id][data_type] = action_parsed.payload.data;
+      
+  } catch (error) {
+      console.log("Error: ", error, " - Message; ", action_parsed);
+  }
+
+  return clonedData;
+}
+
 export default function DeviceTable({ color }) {
+
+  const [_dispatch_txData, _rxData] = useWebSocket(rxDataReducer, null, initRxData);
+
+  useEffect(() => {
+    _dispatch_txData({msg_type: "subscribe", payload: {device_id: -1, data_type: "info"} });
+    _dispatch_txData({msg_type: "subscribe", payload: {device_id: -1, data_type: "status"} });
+
+    return () => { // Never take place, websocket closes too fast
+      _dispatch_txData({msg_type: "unsubscribe", payload: {device_id: -1, data_type: "info"} });    
+      _dispatch_txData({msg_type: "unsubscribe", payload: {device_id: -1, data_type: "status"} });
+    }
+}, [_dispatch_txData]);
+
   return (
     <>
       <div
@@ -94,25 +172,41 @@ export default function DeviceTable({ color }) {
               </tr>
             </thead>
             <tbody className="">
-              <TableItem 
+              {
+                Object.keys(_rxData).map((id, i) => 
+                  <TableItem 
+                    color="dark" 
+                    //imageName="arduino-mkr-wifi-1010.jpg" 
+                    batteryLevel={_rxData[id].status.battery} 
+                    deviceName={_rxData[id].info.name}
+                    status={_rxData[id].status.connection} 
+                    deviceID={parseInt(id)}
+                    deviceType={_rxData[id].info.type}
+                    key={i}
+                  />
+                )
+              }
+              {/* <TableItem 
                 color="dark" 
-                imageName="arduino-mkr-wifi-1010.jpg" 
+                //imageName="arduino-mkr-wifi-1010.jpg" 
                 batteryLevel={85} 
                 deviceName="Omniwheel 1" 
                 status="online"
                 deviceID={1}
+                deviceType="Arduino"
               />
               <TableItem deviceID={2}/>
               <TableItem 
                 color="dark" 
-                imageName="omniwheel1.jpg" 
+                //imageName="omniwheel1.jpg" 
                 batteryLevel={25} 
                 deviceName="Omniwheel 2" 
                 status="online"
                 deviceID={3}
+                deviceType="Omniwheel"
               />
               <TableItem />
-              <TableItem />
+              <TableItem /> */}
               {/* <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <img

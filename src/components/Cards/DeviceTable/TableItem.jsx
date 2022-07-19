@@ -11,8 +11,10 @@ const TableItem = ({
     deviceName,
     status,
     batteryLevel,
-    imageName, // With extension
+    //imageName, // With extension
     deviceID,
+    deviceType,
+    //listKey,
   
   }) => {
     const { setSelectedDevice } = useStore();
@@ -32,6 +34,7 @@ const TableItem = ({
       `
     ).allFile.nodes
     
+    const imageName = (deviceType === "Omniwheel" ? "omniwheel1.jpg" : (deviceType === "Arduino") ? "arduino-mkr-wifi-1010.jpg" : "unknown.jpg")
     const imageData = imageDataNodes.find(element => element.base === imageName);
     //console.log(imageData)
     const imageUnknown = imageDataNodes.find(element => element.base === "unknown.jpg");
@@ -40,12 +43,12 @@ const TableItem = ({
     
     return (
       <tr>
-        <th className="cursor-pointer border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center"
+        <th className=""
             onClick={() => setSelectedDevice((state) => deviceID)}
-            
+            //key={listKey}
         >
             <Link 
-                className="w-full"
+                className="w-full cursor-pointer border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center"
                 to="/robots"
                 //onMouseEnter={() => setExpandShow("")}
                 // onMouseLeave={() => setExpandShow("hidden")}
@@ -71,7 +74,7 @@ const TableItem = ({
                 />
                 <span
                     className={
-                    "ml-3 font-bold " +
+                    "ml-3 font-bold object-left " +
                     (color === "light" ? "text-blueGray-500" : "text-white")
                     }
                 >
@@ -87,7 +90,7 @@ const TableItem = ({
         </td> */}
         {/* STATUS */}
         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-          <i className={"fas fa-circle " + (status === "online" ? "text-green-500" : "text-red-500") + " mr-2"}></i> {status}
+          <i className={"fas fa-circle " + (status === "online" ? "text-green-500" : status === "offline" ? "text-red-500" : "text-blueGray-500") + " mr-2"}></i> {status}
         </td>
   
         {/* BATTERY */}
@@ -120,17 +123,20 @@ const TableItem = ({
     deviceName: "defaultName",
     status: "offline",
     batteryLevel: 50,
-    imageName: "unknown.jpg",
-    deviceID: -1
+    //imageName: "unknown.jpg",
+    deviceID: -1,
+    deviceType: "unknown"
   };
   
   TableItem.propTypes = {
     color: PropTypes.oneOf(["light", "dark"]),
     deviceName: PropTypes.string,
-    status: PropTypes.oneOf(["online", "offline"]),
+    status: PropTypes.oneOf(["online", "offline", "unknown"]),
     batteryLevel: PropTypes.number,
-    imageName: PropTypes.string,
+    //imageName: PropTypes.string,
     deviceID: PropTypes.number,
+    deviceType: PropTypes.string,
+    //listKey: PropTypes.number.isRequired,
   };
 
   export default TableItem;

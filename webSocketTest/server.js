@@ -9,12 +9,10 @@ Then:
 import http from 'http';
 import fs from 'fs';
 //const ws = new require('ws');
-import WebSocket, { WebSocketServer } from "ws"
+import { WebSocketServer } from "ws"
 import os from 'os'
 
 import net from "net"
-import { parse } from 'path';
-import { list } from 'postcss';
 
 const http_server = http.createServer(accept).listen(8080, () => {
   console.log("Opened http server on ", http_server.address());
@@ -27,47 +25,157 @@ const wss = new WebSocketServer({noServer: true});
 const Browser_clients = [null];
 const Arduino_clients = [null];
 
-const Arduino_data = [
-  {
-    info: {
-      name: "unkown",
-      type: "unkown",
-    },
-    status:{
-      connection: "unknown",
-      battery: 0,
-    },
-    position: {},
-    velocity: [],
+//const Arduino_data = [];
+class ArduinoData {
+  #data;
+  #globalListeners
+  constructor() {
+    this.#data = []
+    this.#globalListeners = new ArduinoListenerObject();
   }
-];
+
+  set(deviceID, dataID, value){
+    try{
+      // Check if object exists
+      if(this.#data[deviceID] === undefined){
+        this.#data[deviceID] = new ArduinoDataObject();
+      }
+
+      // Set Value
+      if(Array.isArray(this.#data[deviceID][dataID])){
+        // Is array, push into FIFO
+        if(this.#data[deviceID][dataID].length > 50){
+          this.#data[deviceID][dataID].shift();
+        }
+        this.#data[deviceID][dataID].push(value);
+      }else{
+        // Not an array, just set
+        this.#data[deviceID][dataID] = value;
+      }
+
+      //Notify Subscribers
+      this.#data[deviceID].listeners[dataID].forEach((listener_id, index) => {
+        sendData(Browser_clients[listener_id], deviceID, dataID, value);
+      })
+
+      //Notify Global Listeners
+      this.#globalListeners[dataID].forEach((listener_id, index) => {
+        sendData(Browser_clients[listener_id], deviceID, dataID, value);
+      })
+    }catch(err){
+      console.log("Error on ArduinoData setter: ", err);
+    }
+
+    console.log("ARDUINO_DATA: ", this.#data);
+  }
+
+  get(deviceID, dataID){
+    try{
+      if(deviceID == -1){
+        //TODO getter for all devices
+        throw "Getter for all devices not implemented";
+      }
+      return this.#data[deviceID][dataID];
+    }catch(err){
+      console.log("Error on ArduinoData getter: ", err);
+    }
+    
+  }
+
+  subscribe(deviceID, dataID, clientID){
+    try{
+      if(deviceID == -1){
+        //Subscribe to all devices
+        this.#globalListeners[dataID].add(clientID)
+        console.log("Added subscription for all Arduinos - data: ", dataID); 
+
+        // Send stashed data
+        this.#data.forEach((value, index) => {
+          if(value !== undefined){
+            sendData(Browser_clients[clientID], index, dataID, value[dataID]);
+          }
+        })
+      }else{
+        //Subscribe to one device
+        this.#data[deviceID].listeners[dataID].add(clientID)
+        console.log("Added subscription for Arduino index: ", deviceID, " - data: ", dataID);
+
+        // Send stashed data
+        sendData(Browser_clients[clientID], deviceID, dataID, this.#data[deviceID][dataID]);
+      }
+
+    }catch(err){
+      console.log("Error on ArduinoData subscribe: ", err);
+    }
+  }
+
+  unsubscribe(deviceID, dataID, clientID){
+    try{
+      if(deviceID == -1){
+        //UnSubscribe from all devices
+        this.#globalListeners[dataID].delete(clientID)
+        console.log("Removed subscription for all Arduino devices - data: ", dataID, " - client: ", clientID);
+      }else{
+        //UnSubscribe from one device
+        this.#data[deviceID].listeners[dataID].delete(clientID)
+        console.log("Removed subscription for Arduino index: ", deviceID, " - data: ", dataID, " - client: ", clientID);
+      }
+    }catch(err){
+      console.log("Error on ArduinoData unsubscribe: ", err);
+    }
+  }
+
+  clear(deviceID){
+    delete this.#data[deviceID];
+  }
+}
 
 class ArduinoDataObject {
-  constructor(name, type) {
-    this.info.name = name;
-    this.info.type = type;
-    this.status.connection = "unknown";
-    this.satus.battery = 0;
-    this.position = [];
+  constructor() {
+    this.info = {
+      name: "unkown",
+      type: "unkown"
+    }
+    this.status = {
+      connection: "unknown",
+      battery: 0
+    }
+    this.position = {
+      pos: [],
+      time: 0
+    };
     this.velocity = [];
+
+    this.listeners = new ArduinoListenerObject();
   }
 }
 
-const Arduino_listeners = [
-  {
-    status: new Set(),
-    position: new Set(),
-    velocity: new Set(),
+class ArduinoListenerObject {
+  constructor() {
+    this.info = new Set(),
+    this.status = new Set(),
+    this.position = new Set(),
+    this.velocity = new Set()
   }
-]
+}
+
+const myArduinoData = new ArduinoData()
+
+// const Arduino_listeners = [
+//   {
+//     status: new Set(),
+//     position: new Set(),
+//     velocity: new Set(),
+//   }
+// ]
 
 // Listeners for all Arduino devices
-const Arduino_listeners_global = 
-{
-  status: new Set(),
-  position: new Set(),
-  velocity: new Set(),
-}
+// const Arduino_listeners_global = 
+// {
+//   status: new Set(),
+//   position: new Set(),
+//   velocity: new Set(),
+// }
 
 function sendData(ws, device_id, data_type, data){
   const message = {
@@ -78,6 +186,7 @@ function sendData(ws, device_id, data_type, data){
       data: data
     }
   }
+  console.log("Message Sent: ", message);
   ws.send(JSON.stringify(message));
 }
 
@@ -127,15 +236,18 @@ function accept(req, res) {
 
 function onSocketConnect(ws) {
   //Browser_clients.add(ws);
-  const index = add_client(ws, Browser_clients);
-  let device_id = null;
-  let data_type = null;
+  const _client_index = add_client(ws, Browser_clients);
+
+  //Current Subscription Data
+  //let _sub_device_id = null;
+  //let _sub_data_type = null;
+  const _sub_data = [];
 
   console.log(`new connection`);
 
   // ON MESSAGE CALLBACK ///////////////////////////////////////////////////////////////////////////////////////
   ws.on('message', (message) => {
-    console.log(`message received: ${message}`);
+    //onsole.log(`message received: ${message}`);
 
     //message = message.slice(0, 100); // max message length will be 50
 
@@ -146,121 +258,109 @@ function onSocketConnect(ws) {
     } catch (error) {
       console.log("Invalid JSON string: %s", message);
     }
-  
+    
+    // FOR TEST
+    // if(parsed_message.msg_type.startsWith("test")){
+    //   if(Arduino_data[_client_index] === undefined){
+    //     Arduino_data[_client_index] = new ArduinoDataObject("unknown", "unknown");
+    //   }
+    // }
+
     //log(`message after slice: ${message}`);
-    console.log("Parsed object: ", parsed_message);
+    console.log("Parsed object from msg: ", parsed_message);
 
     try {
       
-      if(parsed_message.msg_type === "test"){ // Test: add data to arduino data buffer at index 0
-        const pos_data = {"pos": parsed_message.pos, "tiempo": parsed_message.tiempo};
-        const vel_data = {"vel": parsed_message.vel, "tiempo": parsed_message.tiempo};
+      switch(parsed_message.msg_type){
 
-        // Stash data
-        Arduino_data[index].position.push(pos_data)
-        Arduino_data[index].velocity.push(vel_data)
+        case "test":{
+          const pos_data = {"pos": parsed_message.pos, "time": parsed_message.time};
+          const vel_data = {"vel": parsed_message.vel, "time": parsed_message.time};
 
-        if(Arduino_data[index].position.length >= 50){
-          Arduino_data[index].position.shift();
-          Arduino_data[index].velocity.shift();
+          myArduinoData.set(_client_index, "position", pos_data);
+          myArduinoData.set(_client_index, "velocity", vel_data);
         }
+        break;
 
-        // Redirect if active subscription
-        Arduino_listeners[index].position.forEach((listener_indx) => {
-          Browser_clients[listener_indx].send(JSON.stringify(pos_data));
-        });
-        Arduino_listeners[index].velocity.forEach((listener_indx) => {
-          Browser_clients[listener_indx].send(JSON.stringify(vel_data));
-        });
-
-        return;
-      }else if(parsed_message.msg_type === "subscribe"){
-        //Check no other subscription active
-        if(device_id !== null || data_type !== null){
-          throw "Already subscribed to something else";
+        case "test_status":{
+          const data = {connection: parsed_message.payload.connection, battery: parsed_message.payload.battery};
+          myArduinoData.set(_client_index, "status", data);
         }
+        break;
 
-        // Save subscription parameters
-        device_id = parsed_message.payload.device_id;
-        data_type = parsed_message.payload.data_type;
+        case "test_info":{
+          const data = { name: parsed_message.payload.name, type: parsed_message.payload.type}
+          myArduinoData.set(_client_index, "info", data);
+        }
+        break;
 
-        // Add to listeners
-        if( device_id != -1){
-          // Listen to one device
-          Arduino_listeners[device_id][data_type].add(index); 
-          console.log("Added subscription for Arduino index: ", device_id, " - data: ", data_type);
+        case "test_clear":{
+          myArduinoData.clear(_client_index);
+        }
+        break;
 
-          // Send cached data
-          let data = Arduino_data[device_id][data_type];
-          if( Array.isArray(data)){ // If array, send all
-            for(let element of Arduino_data[device_id][data_type]){ 
-              ws.send(JSON.stringify(element));
+        case "subscribe":{
+
+          // Subscription parameters
+          const device_id = parsed_message.payload.device_id;
+          const data_type = parsed_message.payload.data_type;
+
+          // Check for subscription already aactive
+          for( let sub in _sub_data ){
+            if( (sub.device_id == device_id) && (sub.data_type == data_type) ){
+              throw "Already subscribed to something else";
             }
-          }else{ // Not array
-            ws.send(JSON.stringify(data));
           }
-        }else{ //device_id == -1 signals we want to subscribe to all devices
-          // Listen to all devices
-          Arduino_listeners_global[data_type].add(index);
-          console.log("Added subscription for all Arduinos - data: ", data_type); 
 
-          // Send cached data of each device
-          Arduino_data.forEach((device_data) => {
-            if( Array.isArray(device_data)){ // If array, send all
-              for(let element of device_data[data_type]){ 
-                ws.send(JSON.stringify(element));
-              }
-            }else{ // Not array
-              ws.send(JSON.stringify(data));
+          // Save parameters
+          _sub_data.push({ device_id: device_id, data_type: data_type });
+
+          myArduinoData.subscribe(device_id, data_type, _client_index);
+        }
+        break;
+
+        case "unsubscribe":{
+          // Subscription parameters
+          const device_id = parsed_message.payload.device_id;
+          const data_type = parsed_message.payload.data_type;
+          let found_indx = -1;
+
+          // Check subscription parameters are correct
+          for (const [i, sub] of _sub_data.entries()) {
+            if( (sub.device_id == device_id) && (sub.data_type == data_type) ){
+              myArduinoData.unsubscribe(_sub_device_id, _sub_data_type, _client_index);
+              found_indx = i;
             }
-          })
+          }
+          
+          // No matching subscription found
+          if(found_indx == -1){
+            throw "Error in UnSubscibe: Sub info doesn't match";
+          }
+          
+          // Remove entry
+          _sub_data.splice(found_indx, 1);
+          
         }
+        break;
 
-        return
-      }else if(parsed_message.msg_type === "unsubscribe"){
-        // Check subscription parameters are correct
-        if( device_id !== parsed_message.payload.device_id ){
-          throw "Sub id doesn't match";
-        }else if( data_type !== parsed_message.payload.data_type ){
-          throw "Sub data_type doesn't match";
-        }
-        
-        // Remove from listeners
-        if(device_id != -1){
-          Arduino_listeners[device_id][data_type].delete(index);
-        }else{
-          Arduino_listeners_global[data_type].delete(index);
-        }
-        
-        device_id = null;
-        data_type = null;
+        case "get":{
+          const dev_id_get = parsed_message.payload.device_id;
+          const data_type_get = parsed_message.payload.data_type;
 
-        return;
-      }else if(parsed_message.msg_type === "get"){
-        const dev_id_get = parsed_message.payload.device_id;
-        const data_type_get = parsed_message.payload.data_type;
-        if(dev_id_get != -1){
-          sendData(ws, dev_id_get, data_type_get, Arduino_data[dev_id_get][data_type_get])
-        }else{
-          Arduino_data.forEach((value, index) => {
-            sendData(ws, index, data_type_get, value[data_type_get])
-          })
+          const data  = myArduinoData.get(dev_id_get, data_type_get);
+          sendData(ws, dev_id_get, data_type_get, data);
         }
+        break;
+
       }
       
     } catch (error) {
-      console.log("Error: ", error, " - Message ", parsed_message);
+      console.log("On client message Error: ", error, " - Message ", parsed_message);
     }
 
-    //const parsed = JSON.parse(message)
-    //console.log(`parsed message: ${parsed}`);
-    // for(let client of Browser_clients) {
-    //   //client.send(JSON.stringify(parsed));
-    //   if(client === null){
-    //     continue;
-    //   }
-    //   client.send(JSON.stringify(parsed_message));
-    // }
+    //console.log("Arduino Data: ", Arduino_data);
+   
   });
 
   // ON CLOSE CALLBACK ///////////////////////////////////////////////////////////////////////////////////////
@@ -270,26 +370,25 @@ function onSocketConnect(ws) {
     try {
 
       // Check for active subscription
-      if(device_id === null && data_type === null){
+      if( _sub_data.length == 0 ){
         console.log("No subscription to remove");
-      }else if (device_id === null || data_type === null){
-        throw "Something went wrong";
       }else{
-        // Remove subscription
-        Arduino_listeners[device_id][data_type].delete(index);
-        console.log("Removed subscription for Arduino index: ", device_id, " - data: ", data_type);
+        // Remove subscriptions
+        console.log("Sub Data: ", _sub_data);
+        for(let sub of _sub_data){
+          myArduinoData.unsubscribe(sub.device_id, sub.data_type, _client_index);
+        }
       }
 
+      // Remove client
+      delete Browser_clients[_client_index];
+      Browser_clients[_client_index] = null;
+      console.log("Removed client at index: %d", _client_index);
+
     } catch (error) {
-      console.log("Error: ", error, " - Message ", parsed_message);
+      console.log("Error: ", error);
     }
 
-    // Remove client
-    delete Browser_clients[index];
-    Browser_clients[index] = null;
-    console.log("Removed client at index: %d", index);
-
-    //console.log(Browser_clients);
   });
 }
 
@@ -403,7 +502,7 @@ Arduino_server.listen(8090, () => {
   console.log('opened server on', Arduino_server.address());
 
   Arduino_server.on('close', () => {
-    console.log('TCP server socket is closed.d');
+    console.log('TCP server socket is closed.');
 
     for(let client of Arduino_clients) {
       //client.send(JSON.stringify(parsed));

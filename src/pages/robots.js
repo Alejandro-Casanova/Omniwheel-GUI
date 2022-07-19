@@ -1,9 +1,10 @@
 import React from "react";
 //import { Link } from "gatsby";
-
+import { useStore } from "../components/Store/Store.jsx";
 //import Layout from "../layouts/layout1.js";
 
 import CardLineChart from "../components/Cards/Charts/CardLineChart.js";
+import RobotConnectionAlert from "../components/Alerts/RobotConnectionAlert"
 //import DeviceTable from "../components/Cards/DeviceTable";
 //import CardBarChart from "../components/Cards/Charts/CardBarChart.js";
 //import CardPageVisits from "../components/Cards/CardPageVisits.js";
@@ -15,17 +16,25 @@ import CardLineChart from "../components/Cards/Charts/CardLineChart.js";
 //import { useStore } from "../components/Store/Store.jsx";
 import FormSelector from "../components/Input/FormSelector.js";
 
-const Dashboard = () => {
+const Robots = () => {
     //const {rxData} = useStore();
+    const { selectedDevice } = useStore();
+    //console.log("ROBOTS STORE: ", selectedDevice);
   return (
     //<Layout>
     <>
+        <div className="relative z-20 px-4">
+            <RobotConnectionAlert 
+                deviceId={selectedDevice}
+            />
+        </div>
+        
         <div className="flex flex-wrap items-center">
             <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
-                <CardLineChart title="Velocity Data" subTitle="3D Components" />
+                <CardLineChart title="Velocity Data" subTitle="3D Components" deviceId={selectedDevice}/>
             </div>
             <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
-                <FormSelector />
+                <FormSelector deviceId={selectedDevice} />
             </div>
         </div>
         {/* <div className="flex flex-row flex-wrap mt-4 ">
@@ -41,4 +50,4 @@ const Dashboard = () => {
   );
 }
 
-export default Dashboard;
+export default Robots;

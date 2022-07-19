@@ -1,20 +1,23 @@
 
 const defaultMessage = {
-    msg_type: "", // subscribe, unsubscribe, get, keepAlive
-    //command_type: "",
-    //rw: "", 
-    //sub_id: "",
-    //sub_data_type: "",
-    //value1: 0,
-    //value2: 0,
-    //value3: 0,
+    msg_type: "", // command, subscribe, unsubscribe, get, keepAlive
     payload: {
-        rw: "", 
         device_id: "",
-        data_type: "",
-        value1: 0,
-        value2: 0,
-        value3: 0,
+        data_type: "", //position, velocity, status, info
+        rw: "", 
+        data: {
+            time: 0,
+            pos: [],
+            vel: [],
+            status: {
+                connection: "",
+                battery: 0
+            },
+            info: {
+                name: "",
+                type: "",
+            }
+        }
     }
 }
 

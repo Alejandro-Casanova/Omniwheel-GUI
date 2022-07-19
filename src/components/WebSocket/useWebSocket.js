@@ -2,6 +2,8 @@ import reconnectingWebSocket from "./reconnectingWebSocket";
 import {useRef, useReducer, useEffect, useState} from 'react'
 import PropTypes from "prop-types";
 
+// TODO: Websocket closes too fast, unsibscribe before closing
+
 const defaultInitRxData = (intialVal) =>  {
     if(typeof intialVal !== 'object' && intialVal.constructor !== Object){
         return intialVal;
@@ -16,56 +18,67 @@ const defaultRxDataReducer = (state, action) => {
 }
 
 const txDataReducer = (state, action) => {
+    //console.log("State: ", state, " - Action: ", action)
 
     //const clonedData = {...state}; // Prevents state mutation (indispensable)
+    try{
 
-    if(action === null){
-        return null;
-    }
-  
-    if (typeof action === 'string' || action instanceof String){
-      if(action === 'reset'){
-        console.log("Reset achieved");
-        return null; 
-      }
-    }
-  
-    // Checks if message is an object
-    if(typeof action !== 'object' && action.constructor !== Object){
-      console.log("Not an object:")
-      console.log(action)
-      return null;
+        if(action === null){
+            return null;
+        }
+    
+        if (typeof action === 'string' || action instanceof String){
+            if(action === "shift"){
+                const clonedData = state.slice();
+                clonedData.shift();
+                if(clonedData.length <= 0){
+                    return null
+                }
+                return clonedData;
+
+            }else if(action === 'reset'){
+                console.log("Reset achieved");
+                return null; 
+            }
+        }
+    
+        // Checks if message is an object
+        if(typeof action !== 'object' && action.constructor !== Object){
+            console.log("Not an object:")
+            console.log(action)
+            return null;
+        }
+
+        // Checks if message object has a "msg_type" key
+        if(!('msg_type' in action)){
+            console.log("Missing msg_type")
+            console.log(action)
+            return null
+        }
+    
+        // Checks if message object has a "payload" key
+        if(!('payload' in action)){
+            console.log("Missing payload")
+            console.log(action)
+            return null
+        }
+        
+        if(state === null){
+            //Start array
+            return [action];
+        }else{
+            //Push
+            const clonedData = state.slice();
+            clonedData.push(action);
+            return clonedData;
+        }
+        
+    }catch(err){
+        console.log("Error at txDataDispatcher: ", err, "Action: ", action, "State: ", state);
     }
 
-    // Checks if message object has a "data_type" key
-    if(!('msg_type' in action)){
-        console.log("Missing msg_type")
-        console.log(action)
-        return null
-      }
-  
-    // Checks if message object has a "data_type" key
-    if(!('command_type' in action)){
-      console.log("Missing command_type")
-      console.log(action)
-      return null
-    }
-
-    // Checks if message object has a "rw" key
-    if(!('rw' in action)){
-        console.log("Missing rw")
-        console.log(action)
-        return null
-    }
-
-    // Checks if message object has values
-    if(!('value1' in action) || !('value2' in action) || !('value3' in action)){
-        console.log("Missing value1, value2 or value3")
-        console.log(action)
-        return null
-    }
-  
-    return action;
+    return state;
+    
 }
 
 
@@ -98,11 +111,13 @@ const useWebSocket = (
 
     //Message Send
     useEffect(() => {
+        //console.log("TXDATA: ", _txData)
+
         if(_txData === null) return;
         if( !_isConnected ) return;
         
-        _wsRef.current.send(JSON.stringify(_txData));
-        _dispatch_txData(null);
+        _wsRef.current.send(JSON.stringify(_txData[0]));
+        _dispatch_txData("shift");
 
     }, [_isConnected, _txData])
 

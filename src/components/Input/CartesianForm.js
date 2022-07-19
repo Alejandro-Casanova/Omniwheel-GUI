@@ -22,7 +22,8 @@ const CartesianForm = ({
     subTitleText = "Default Subtitle",
     formName,
     variableName = "Default",
-    cmd_name // Important: command type sent to proxy
+    cmd_name, // Important: command type sent to proxy
+    deviceId = null,
     
 
 }) => {
@@ -32,16 +33,27 @@ const CartesianForm = ({
     const [_dispatch_txData] = useWebSocket();
 
     const handleSubmit = (e) => {
+        e.preventDefault();
         //alert('Your favorite flavor is: ' + this.state.value);
+        if(deviceId === null || deviceId === undefined){
+            console.log("Could not send command, deviceId: ", deviceId);
+            return;
+        }
         console.log("Submited state: %s", JSON.stringify(state));
         _dispatch_txData({
-            command_type: cmd_name,
-            rw: "w",
-            value1: state.x_value,
-            value2: state.y_value,
-            value3: state.z_value
+            msg_type: "command",
+            payload: {
+                rw: "w",
+                cmd_type: cmd_name,
+                device_id: deviceId,
+                data: {
+                    value1: state.x_value,
+                    value2: state.y_value,
+                    value3: state.z_value
+                }
+            }
         })
-        e.preventDefault();
+        
     }
 
     const onChange = useCallback((e) => {
@@ -108,6 +120,7 @@ CartesianForm.propTypes = {
     formName: PropTypes.string.isRequired,
     variableName: PropTypes.string,
     cmd_name: PropTypes.string.isRequired,
+    deviceId: PropTypes.number,
 }
 
 export default CartesianForm;

@@ -7,11 +7,12 @@ import CartesianForm from "./CartesianForm";
 const FormSelector = ({
     forms = ["Motor Speeds", "Robot Speeds", "Robot Position", "Robot Cartesian Position"],
     formData = [
-        {cmd_name: "MOT",  formName: "mot",  variableName: "Speed",    titleText: "Motor Speeds",             subTitleText: ""},
-        {cmd_name: "VEL",  formName: "vel",  variableName: "Speed",    titleText: "Robot Speeds",             subTitleText: ""},
-        {cmd_name: "POS",  formName: "pos",  variableName: "Position", titleText: "Robot Position",           subTitleText: ""},
-        {cmd_name: "POSC", formName: "posc", variableName: "Position", titleText: "Robot Cartesian Position", subTitleText: ""},
-    ]
+        {cmd_name: "MOT",  formName: "mot",  variableName: "Speed",     titleText: "Motor Speeds",             subTitleText: ""},
+        {cmd_name: "VEL",  formName: "vel",  variableName: "Speed",     titleText: "Robot Speeds",             subTitleText: ""},
+        {cmd_name: "POS",  formName: "pos",  variableName: "Pos",       titleText: "Robot Position",           subTitleText: ""},
+        {cmd_name: "POSC", formName: "posc", variableName: "Pos",       titleText: "Robot Cartesian Position", subTitleText: ""},
+    ], 
+    deviceId = null,
 }) => {
     const [openTab, setOpenTab] = React.useState(2);
 
@@ -30,14 +31,14 @@ const FormSelector = ({
                             <div key={index}  className="-mb-px mr-0 flex-initial text-center">
                                 <a
                                     className={
-                                    "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
-                                    (openTab === (index + 1)
-                                        ? "text-white bg-lightBlue-600"
-                                        : "text-lightBlue-600 bg-white")
+                                        "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
+                                        (openTab === (index + 1)
+                                            ? "text-white bg-lightBlue-600"
+                                            : "text-lightBlue-600 bg-white")
                                     }
                                     onClick={e => {
-                                    e.preventDefault();
-                                    setOpenTab(index + 1);
+                                        e.preventDefault();
+                                        setOpenTab(index + 1);
                                     }}
                                     data-toggle="tab"
                                     href={"#link" + (index + 1)}
@@ -116,6 +117,7 @@ const FormSelector = ({
                                         <CartesianForm cmd_name={currentValue.cmd_name} formName={currentValue.formName} 
                                             variableName={currentValue.variableName} titleText={currentValue.titleText}
                                             subTitleText={currentValue.subTitleText} 
+                                            deviceId={deviceId}
                                         />
                                     </div>
                                 ))
@@ -164,6 +166,7 @@ export default FormSelector;
   
 FormSelector.propTypes = {
     forms: PropTypes.arrayOf(PropTypes.string),
-    formData: PropTypes.arrayOf(PropTypes.object)
+    formData: PropTypes.arrayOf(PropTypes.object),
+    deviceId: PropTypes.number,
 };
 
