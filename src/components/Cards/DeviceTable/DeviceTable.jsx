@@ -87,7 +87,7 @@ export default function DeviceTable({ color }) {
       <div
         className={
           "relative flex flex-col min-w-0 break-words w-full pb-4 mb-6 shadow-lg rounded " +
-          (color === "light" ? "bg-white" : "bg-lightBlue-900 text-white")
+          (color === "light" ? "bg-white" : "bg-myGray-2 text-white")
         }
       >
         <div className="rounded-t mb-0 px-4 py-3 border-0">
@@ -114,10 +114,13 @@ export default function DeviceTable({ color }) {
               <tr>
                 <th
                   className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    "px-6 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-left " +
+                    //"border border-solid border-l-0 border-r-0 " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                      : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
+                      // : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700"
+                      : "bg-myGray-3 text-blueGray-300"
+                      )
                   }
                 >
                   Unit Id
@@ -134,11 +137,13 @@ export default function DeviceTable({ color }) {
                 </th> */}
                 <th
                   className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    "px-6 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-left " +
+                    //"border border-solid border-l-0 border-r-0 " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                      : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
-                  }
+                      //: "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700"
+                      : "bg-myGray-3 text-blueGray-300"
+                    )}
                 >
                   Status
                 </th>
@@ -154,19 +159,25 @@ export default function DeviceTable({ color }) {
                 </th> */}
                 <th
                   className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    "px-6 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-left " +
+                    //"border border-solid border-l-0 border-r-0 " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                      : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
+                      //: "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700"
+                      : "bg-myGray-3 text-blueGray-300"
+                    )
                   }
                 >
                   Battery
                 </th>
                 <th className={
-                    "px-6 align-middle border border-solid py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left " +
+                    "px-6 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-left " +
+                    //"border border-solid border-l-0 border-r-0 " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
-                      : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
+                      //: "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700"
+                      : "bg-myGray-3 text-blueGray-300"
+                    )
                   }
                 ></th>
               </tr>
@@ -194,8 +205,8 @@ export default function DeviceTable({ color }) {
                 status="online"
                 deviceID={1}
                 deviceType="Arduino"
-              />
-              <TableItem deviceID={2}/>
+              /> */}
+              {/* <TableItem deviceID={2}/>
               <TableItem 
                 color="dark" 
                 //imageName="omniwheel1.jpg" 
@@ -204,9 +215,9 @@ export default function DeviceTable({ color }) {
                 status="online"
                 deviceID={3}
                 deviceType="Omniwheel"
-              />
+              /> */}
               <TableItem />
-              <TableItem /> */}
+              <TableItem />
               {/* <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <img

@@ -22,7 +22,7 @@ const Dashboard = () => {
     <>
         <div className="flex flex-wrap items-center">
             <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
-                <CardScatterChart title="Position Data" subTitle="2D Plane" />
+                <CardScatterChart title="Robot Positions" subTitle="Room Top View" />
                 {/* <CardLineChart title="Velocity Data" subTitle="3D Components" displayData={rxData.velData} /> */}
             </div>
             <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
@@ -31,7 +31,7 @@ const Dashboard = () => {
                         <DeviceTable color="dark" />
                     </div>
                     {/* <CardScatterChart title="Position Data" subTitle="2D Plane" displayData={{"Robot Position": rxData.posData}}/> */}
-                    <div className="w-full flex-auto">
+                    <div className="w-full flex-auto shadow-lg">
                         <GlobalCommands />
                     </div>
                 </div>

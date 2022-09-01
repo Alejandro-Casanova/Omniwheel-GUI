@@ -8,11 +8,12 @@ export default function FooterAdmin() {
           <hr className="mb-4 border-b-1 border-blueGray-200" />
           <div className="flex flex-wrap items-center md:justify-between justify-center">
             <div className="w-full md:w-4/12 px-4">
-              <div className="text-sm text-blueGray-500 font-semibold py-1 text-center md:text-left">
-                Copyright © 2022 {" "}
+              <div className="text-sm text-blueGray-300 font-semibold py-1 text-center md:text-left">
+                {/* Copyright © 2022 {" "} */}
+                2022 {" "}
                 <a
                   href="#pablo"
-                  className="text-blueGray-500 hover:text-blueGray-700 text-sm font-semibold py-1"
+                  className="text-blueGray-300 hover:text-blueGray-500 text-sm font-semibold py-1"
                 >
                   Inordine Labs
                 </a>
@@ -31,7 +32,7 @@ export default function FooterAdmin() {
                 <li>
                   <a
                     href="#inactive"
-                    className="text-blueGray-600 hover:text-blueGray-800 text-sm font-semibold block py-1 px-3"
+                    className="text-blueGray-300 hover:text-blueGray-500 text-sm font-semibold block py-1 px-3"
                   >
                     About Us
                   </a>
@@ -39,15 +40,15 @@ export default function FooterAdmin() {
                 <li>
                   <a
                     href="#inactive"
-                    className="text-blueGray-600 hover:text-blueGray-800 text-sm font-semibold block py-1 px-3"
+                    className="text-blueGray-300 hover:text-blueGray-500 text-sm font-semibold block py-1 px-3"
                   >
                     Blog
                   </a>
                 </li>
                 <li>
                   <a
-                    href="#incative"
-                    className="text-blueGray-600 hover:text-blueGray-800 text-sm font-semibold block py-1 px-3"
+                    href="#inactive"
+                    className="text-blueGray-300 hover:text-blueGray-500 text-sm font-semibold block py-1 px-3"
                   >
                     MIT License
                   </a>

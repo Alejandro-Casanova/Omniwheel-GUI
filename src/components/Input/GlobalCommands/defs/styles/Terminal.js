@@ -7,7 +7,9 @@ const terminal = {
     borderRadius: '5px',
     overflow: 'auto',
     cursor: 'text',
-    backgroundColor: '#212121',
+    // backgroundColor: '#212121',
+    //backgroundColor: '#1d1d1d',
+    backgroundColor: '#000000',
     backgroundSize: 'cover'
   },
   content: {

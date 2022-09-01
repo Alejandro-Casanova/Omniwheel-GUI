@@ -1079,6 +1079,44 @@ select {
     max-width: 1280px;
   }
 }
+/* /////////////// */
+/* // MY COLORS // */
+/* /////////////// */
+
+.bg-myGray-1 {
+  background-color: #121212;
+}
+
+.bg-myGray-2 {
+  background-color: #1d1d1d;
+  /* background-color: rgba(255, 255, 255, 0.05) */
+}
+
+.bg-myGray-3 {
+  background-color: #282828;
+}
+
+.bg-myGray-4 {
+  background-color: #343434;
+}
+
+.bg-myGray-5 {
+  background-color: #404040;
+}
+
+.bg-myGray-6 {
+  background-color: #4c4c4c;
+}
+
+.bg-myGray-7 {
+  background-color: #595959;
+}
+
+.bg-myGray-8 {
+  background-color: #666666;
+}
+
+/* ///////////////////////////////// */
 
 .bg-black {
   --tw-bg-opacity: 1;

@@ -38,11 +38,14 @@ const Layout = ({children, location}) => {
   return (
     <>
       <Sidebar2 currentPath={location.pathname} />
-      <div className="relative md:ml-20 bg-blueGray-100">
+      <div className={"relative md:ml-20" +
+                      //" bg-blueGray-100" 
+                      " bg-myGray-1" 
+                      }>
         <AdminNavbar />
         {/* Header */}
         <HeaderStats />
-        <div className="px-4 md:px-10 mx-auto w-full 
+        <div className="px-4 md:px-10 mx-auto h-full w-full 
                         -mt-36
                         //mt-0
                         ">

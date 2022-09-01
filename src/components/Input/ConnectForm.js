@@ -39,7 +39,7 @@ const ConnectForm = () => {
 
     return (
         
-        <form onSubmit={handleSubmit} className="relative flex flex-wrap place-content-evenly p-6 rounded-lg shadow-lg bg-white w-full">
+        <form onSubmit={handleSubmit} className="relative flex flex-wrap place-content-evenly p-6 rounded-lg shadow-lg bg-myGray-3 w-full">
             <div className="relative lg:flex-1 mx-4 my-1">
                 
                     <Input value={state.ip} onChange={onChange} name="ip" iconName="fas fa-network-wired" labelText="IP Address" ariaText="ipAddressHelp" placeholderText="Enter IP Address"  />

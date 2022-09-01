@@ -26,6 +26,7 @@ const Browser_clients = [null];
 const Arduino_clients = [null];
 
 //const Arduino_data = [];
+
 class ArduinoData {
   #data;
   #globalListeners
@@ -144,8 +145,10 @@ class ArduinoDataObject {
       pos: [],
       time: 0
     };
-    this.velocity = [];
-
+    this.velocity = {
+      vel: [],
+      time: 0,
+    }
     this.listeners = new ArduinoListenerObject();
   }
 }

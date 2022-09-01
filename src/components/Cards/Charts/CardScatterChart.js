@@ -22,7 +22,8 @@ import useWebSocket from '../../WebSocket/useWebSocket';
 
 ChartJS.register(CategoryScale, ScatterController, LinearScale, PointElement, LineElement, Legend, Tooltip);
 
-export const colors = ["yellow", "magenta", "cyan", "red", "blue", "green"];
+//const colors = ["yellow", "magenta", "cyan", "red", "blue", "green"];
+const colors = ["#0004ff", "#ee00bf", "#ff0075", "#ff4631", "#ffac00", "#fff200"];
 
 
 //image.src = "C:/Users/alex/Desktop/TFG_Ale/OmniwheelGUI/omniwheel-gui/src/assets/layouts/layout.png";
@@ -317,7 +318,10 @@ const CardScatter = ({
 
     return (
         <>
-            <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded bg-blueGray-700">
+            <div className={"relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded" +
+                            //" bg-blueGray-700"
+                            " bg-myGray-2"
+                            }>
                 <div className="rounded-t mb-0 px-4 py-3 bg-transparent">
                 <div className="flex flex-wrap items-center">
                     <div className="relative w-full max-w-full flex-grow flex-1">

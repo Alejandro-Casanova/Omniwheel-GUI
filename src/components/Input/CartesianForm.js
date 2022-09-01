@@ -61,9 +61,11 @@ const CartesianForm = ({
     }, []);
 
     return (
-        <div className = "relative flex flex-col w-full bg-white shadow-lg rounded p-6" >
+        <div className = "relative flex flex-col w-full bg-myGray-2 shadow-lg rounded p-6" >
             <form onSubmit={handleSubmit} name = {formName} className="relative flex flex-col w-full place-items-center gap-2">
-                <h2>{titleText}</h2>      
+                <h2 className="text-white text-md uppercase font-bold">
+                    {titleText}
+                </h2>      
                 <legend className="mb-2" >{subTitleText}</legend>
                 <fieldset className="flex flex-row flex-wrap place-content-center w-full gap-3">
                     <div className="flex flex-col flex-auto">

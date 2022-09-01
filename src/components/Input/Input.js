@@ -15,10 +15,11 @@ const Input = ({
             <span className="z-10 h-full top-8 leading-snug font-normal absolute text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3">
                 <i className={iconName}></i>
             </span>
-            <label className="w-full text-gray-700">
+            <label className="w-full text-blueGray-300">
                 {labelText}
                 <input type="text" name={name} value={value} onChange={onChange} placeholder={placeholderText} aria-describedby={ariaText} 
-                    className="px-3 py-3 my-2 placeholder-blueGray-300 text-blueGray-600 relative bg-white bg-white rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full pl-10"/>
+                    className="px-3 py-3 my-2 placeholder-blueGray-600 text-blueGray-300 relative bg-myGray-1 rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full pl-10"
+                />
             </label>
         </div>
     );

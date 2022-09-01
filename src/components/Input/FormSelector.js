@@ -33,8 +33,10 @@ const FormSelector = ({
                                     className={
                                         "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
                                         (openTab === (index + 1)
-                                            ? "text-white bg-lightBlue-600"
-                                            : "text-lightBlue-600 bg-white")
+                                            ? "text-white bg-lightBlue-800"
+                                            //: "text-lightBlue-600 bg-white"
+                                            : "text-blueGray-300 bg-myGray-3"
+                                        )
                                     }
                                     onClick={e => {
                                         e.preventDefault();
