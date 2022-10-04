@@ -128,6 +128,7 @@ class ArduinoData {
 
   clear(deviceID){
     delete this.#data[deviceID];
+    this.#data[deviceID] = null;
   }
 }
 
@@ -406,25 +407,60 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
   console.log('Client connect. Client local address: ' + client.localAddress + ':' + client.localPort + '. client remote address: ' + client.remoteAddress + ':' + client.remotePort);
   
   //Arduino_clients.add(client);
-  const index = add_client(client, Arduino_clients);
-  Arduino_data[index] = new ArduinoDataObject("unkown", "unknown");
+  const current_index = add_client(client, Arduino_clients);
+  //Arduino_data[current_index] = new ArduinoDataObject("unkown", "unknown");
 
   client.setTimeout(30000);   // 30s
   //client.setKeepAlive(true);
 
   client.on('data', async (data) => {
     // Print received client data and length.
-    console.log('Received client data: ' + data.toString('utf-8') + ', data size : ' + client.bytesRead);
-    let msg;
+    console.log('Received client data: ' + data.toString('utf-8') + ', data size: ' + data.length + ', total bytes read : ' + client.bytesRead);
+    let parsed_message;
 
     try{
-      msg = JSON.parse(data);
-      if(msg.msg_type === "init"){
-        Arduino_data[index].name = msg.name;
-        Arduino_data[index].type = msg.type;
-      }else if(msg.msg_type === "keepAlive"){
-        client.setTimeout(30000);
+      parsed_message = JSON.parse(data);
+
+      switch(parsed_message.msg_type){
+
+        case "test":{
+          const pos_data = {"pos": parsed_message.pos, "time": parsed_message.time};
+          const vel_data = {"vel": parsed_message.vel, "time": parsed_message.time};
+
+          myArduinoData.set(current_index, "position", pos_data);
+          myArduinoData.set(current_index, "velocity", vel_data);
+
+          break;
+        }
+        
+        case "status":{
+          const data = {connection: parsed_message.connection, battery: parsed_message.battery};
+          myArduinoData.set(current_index, "status", data);
+          break;
+        }
+
+        case "info":{
+          const data = { name: parsed_message.name, type: parsed_message.robot_type}
+          myArduinoData.set(current_index, "info", data);
+          break;
+        }
+
+        case "keepAlive":{
+          client.setTimeout(30000);
+          break;
+        }
+
+        default:
+          throw Error(`Unknown message type: ${parsed_message.msg_type}`);        
       }
+
+      // if(msg.msg_type === "init"){
+      //   // Arduino_data[current_index].name = msg.name;
+      //   // Arduino_data[current_index].type = msg.type;
+      //   myArduinoData.set(current_index, "info", (({name, robot_type}) => ({name, type: robot_type}))(msg));
+      // }else if(msg.msg_type === "keepAlive"){
+      //   client.setTimeout(30000);
+      // }
     }catch(err){
       console.log(err);
     }
@@ -434,8 +470,8 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
   client.on('end', () => {
 
     // //Arduino_clients.delete(client);
-    // delete Arduino_clients[index];
-    // Arduino_clients[index] = null;
+    // delete Arduino_clients[current_index];
+    // Arduino_clients[current_index] = null;
     
     // console.log('Client disconnect.');
     
@@ -450,20 +486,20 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
     //   }
 
     // });
-    console.log("Socket on end, index: ", index);
+    console.log("Socket on end, index: ", current_index);
 
   });
 
   client.on('error', (err) => {
-    console.log("Socket on error: ", err, " index: ", index)
+    console.log("Socket on error: ", err, " index: ", current_index)
   })
 
   client.on('close', (hadError) => {
-    console.log("Socket on close, index: ", index, (hadError ? " with error" : " with NO error"));
+    console.log("Socket on close, index: ", current_index, (hadError ? " with error" : " with NO error"));
 
     //Arduino_clients.delete(client);
-    delete Arduino_clients[index];
-    Arduino_clients[index] = null;
+    delete Arduino_clients[current_index];
+    Arduino_clients[current_index] = null;
     
     console.log('Client disconnect.');
     
@@ -482,8 +518,8 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
   })
 
   client.on('timeout', () => {
-    console.log("Socket on timeout, index: ", index)
-    Arduino_clients[index].end();
+    console.log("Socket on timeout, index: ", current_index)
+    Arduino_clients[current_index].end();
   })
 
   // When client timeout.
@@ -502,7 +538,7 @@ Arduino_server.on('error', (err) => {
 
 // Listen on port 8090
 Arduino_server.listen(8090, () => {
-  console.log('opened server on', Arduino_server.address());
+  console.log('opened Arduino server on', Arduino_server.address());
 
   Arduino_server.on('close', () => {
     console.log('TCP server socket is closed.');
