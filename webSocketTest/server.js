@@ -14,6 +14,65 @@ import os from 'os'
 
 import net from "net"
 
+//Pasa los mensajes al formato que entiende el arduino
+function parse_to_arduino(command_type, rw , data){
+
+  let header;
+
+  if(rw == 'w'){
+    switch(command_type){
+      
+      case 'MOT':
+        header = "OWR";
+        break;
+
+      case 'VEL':
+        header = "OWR_CI";
+        break;
+
+      case 'POS':
+        header = "OWR_RP";
+        break;
+
+      case 'POSC':
+        header = "OWR_CP";
+        break;
+      
+      default:
+        console.log(`On parse_to_arduino: unknown command type for operation write: ${command_type}`);
+        return null;
+
+    }
+  }
+  else if (rw == 'r'){
+
+    switch(command_type){
+      
+      case 'MOT':
+        header = "OWR-RMOT";
+        break;
+
+      case 'VEL':
+        header = "OWR-RVEL";
+        break;
+
+      case 'POS':
+        header = "OWR-RPOS";
+        break;
+      
+      default:
+        console.log(`On parse_to_arduino: unknown command type for operation read: ${command_type}`);
+        return null;
+        
+    }
+    
+  }
+
+  var s = `${header}::${zeros(data.value1,6)}::${zeros(data.value2,6)}::${zeros(data.value3,6)}`;
+  return s;
+
+}
+
 const http_server = http.createServer(accept).listen(8080, () => {
   console.log("Opened http server on ", http_server.address());
 })
@@ -283,25 +342,29 @@ function onSocketConnect(ws) {
 
           myArduinoData.set(_client_index, "position", pos_data);
           myArduinoData.set(_client_index, "velocity", vel_data);
+
+          break;
         }
-        break;
 
         case "test_status":{
           const data = {connection: parsed_message.payload.connection, battery: parsed_message.payload.battery};
           myArduinoData.set(_client_index, "status", data);
+
+          break;
         }
-        break;
 
         case "test_info":{
           const data = { name: parsed_message.payload.name, type: parsed_message.payload.type}
           myArduinoData.set(_client_index, "info", data);
+
+          break;
         }
-        break;
 
         case "test_clear":{
           myArduinoData.clear(_client_index);
+
+          break;
         }
-        break;
 
         case "subscribe":{
 
@@ -320,8 +383,9 @@ function onSocketConnect(ws) {
           _sub_data.push({ device_id: device_id, data_type: data_type });
 
           myArduinoData.subscribe(device_id, data_type, _client_index);
+
+          break;
         }
-        break;
 
         case "unsubscribe":{
           // Subscription parameters
@@ -344,9 +408,9 @@ function onSocketConnect(ws) {
           
           // Remove entry
           _sub_data.splice(found_indx, 1);
-          
+
+          break;
         }
-        break;
 
         case "get":{
           const dev_id_get = parsed_message.payload.device_id;
@@ -354,8 +418,20 @@ function onSocketConnect(ws) {
 
           const data  = myArduinoData.get(dev_id_get, data_type_get);
           sendData(ws, dev_id_get, data_type_get, data);
+
+          break;
         }
-        break;
+
+        case "command":{
+          var string = parse_to_arduino(parsed_message.payload.cmd_type, parsed_message.payload.rw, parsed_message.payload.data);
+          Arduino_clients[parsed_message.device_id].write(string);
+
+          break;
+        }
+
+        default:
+          throw Error(`Unknown msg_type : ${parsed_message.msg_type} sent by client n.${_client_index}`);
+        
 
       }
       

@@ -4,6 +4,7 @@ const defaultMessage = {
     payload: {
         device_id: "",
         data_type: "", //position, velocity, status, info
+        cmd_type: "",
         rw: "", 
         data: {
             time: 0,
