@@ -4,6 +4,7 @@ import { useStore } from "../components/Store/Store.jsx";
 //import Layout from "../layouts/layout1.js";
 
 import CardLineChart from "../components/Cards/Charts/CardLineChart.js";
+import CardRadarChart from "../components/Cards/Charts/CardRadarChart"
 import RobotConnectionAlert from "../components/Alerts/RobotConnectionAlert"
 //import DeviceTable from "../components/Cards/DeviceTable";
 //import CardBarChart from "../components/Cards/Charts/CardBarChart.js";
@@ -31,7 +32,8 @@ const Robots = () => {
         
         <div className="flex flex-wrap items-center">
             <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
-                <CardLineChart title="Velocity Data" subTitle="3D Components" deviceId={selectedDevice}/>
+                {/* <CardLineChart title="Velocity Data" subTitle="3D Components" deviceId={selectedDevice}/> */}
+                <CardRadarChart deviceID={selectedDevice} />
             </div>
             <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
                 <FormSelector deviceId={selectedDevice} />
