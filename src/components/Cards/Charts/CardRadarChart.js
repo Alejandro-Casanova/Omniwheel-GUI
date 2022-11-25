@@ -135,14 +135,14 @@ export default function CardRadarChart({
     return () => {
       _dispatch_txData({msg_type: "unsubscribe", payload: {device_id: deviceId, data_type: "radar"} });    
     }
-}, [_dispatch_txData, deviceId]);
+  }, [_dispatch_txData, deviceId]);
   
   useEffect(() => {
     _setData({
       labels: [...Array(360).keys()],
       datasets: [
         {
-          label: "default",
+          label: "LIDAR Reading",
           data: _rxData,
           borderColor: colors[0],
           backgroundColor: colors[0],

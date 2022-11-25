@@ -97,7 +97,7 @@ class ArduinoData {
   set(deviceID, dataID, value){
     try{
       // Check if object exists
-      if(this.#data[deviceID] === undefined){
+      if( (this.#data[deviceID] === undefined) || (this.#data[deviceID] === null) ){
         this.#data[deviceID] = new ArduinoDataObject();
       }
 
@@ -209,6 +209,11 @@ class ArduinoDataObject {
       vel: [],
       time: 0,
     }
+    this.radar = {
+      amplitude: 0,
+      angle: 0,
+      time: 0
+    }
     this.listeners = new ArduinoListenerObject();
   }
 }
@@ -218,7 +223,8 @@ class ArduinoListenerObject {
     this.info = new Set(),
     this.status = new Set(),
     this.position = new Set(),
-    this.velocity = new Set()
+    this.velocity = new Set(),
+    this.radar = new Set()
   }
 }
 
@@ -365,6 +371,13 @@ function onSocketConnect(ws) {
 
           break;
         }
+
+        case "test_radar":
+          {
+            const data = { amplitude: parsed_message.amplitude, angle: parsed_message.angle, time: parsed_message.time }
+            myArduinoData.set(_client_index, "radar", data);
+          }
+          break;
 
         case "subscribe":{
 

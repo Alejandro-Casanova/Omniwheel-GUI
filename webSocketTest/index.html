@@ -9,6 +9,7 @@
   <input type="button" value="Start/Stop Sine" onclick="onClick()"/>
   <input type="button" value="Start/Stop Status" onclick="onClick2()"/>
   <input type="button" value="Change Info" onclick="onClick3()"/>
+  <input type="button" value="Start/Stop Radar" onclick="onClick4()"/>
 </form>
 
 <div id="messages"></div>
@@ -123,6 +124,39 @@ const myTimer2 = () => {
   ws.send(JSON.stringify(tim2_message));
 }
 
+let radar_running = 0
+const radar_interval_ms = 10;
+let radar_timeCount_ms = 0
+angle_count = 0
+const onClick4 = () => {
+  if(radar_running == 0){
+    radar_running = 1;
+    timerVar4 = setInterval(myTimer4, radar_interval_ms);
+    console.log("Radar Generator Now Running");
+  }else{
+    radar_running = 0;
+    radar_timeCount_ms = 0
+    clearInterval(timerVar4);
+    console.log("Radar Generator Now Stopped!");
+  }
+}
+
+const myTimer4 = () => {
+  
+  let message = {
+    time: radar_timeCount_ms / 1000.0,
+    angle: angle_count,
+    amplitude: Math.random() * 10,
+    msg_type: "test_radar"
+  };
+
+  console.log("Message Object to send:", message);
+  
+  ws.send(JSON.stringify(message));
+
+  radar_timeCount_ms += radar_interval_ms;
+  angle_count = (++angle_count % 360)
+}
 
 // send message from the form
 document.forms.publish.onsubmit = function() {
