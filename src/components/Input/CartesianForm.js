@@ -67,48 +67,48 @@ const CartesianForm = ({
                     {titleText}
                 </h2>      
                 <legend className="mb-2" >{subTitleText}</legend>
-                <fieldset className="flex flex-row flex-wrap place-content-center w-full gap-3">
-                    <div className="flex flex-col flex-auto">
+                <fieldset className="flex flex-col flex-wrap place-content-center w-full gap-3 px-8">
+                    {/* <div className="flex flex-col flex-auto"> */}
                         
-                        <Input value={state.x_value} onChange={onChange} name="x_value" labelText={"X " + variableName} iconName="fas fa-gear" placeholderText="X Value" ariaText="X Value" />
+                    <Input value={state.x_value} onChange={onChange} name="x_value" labelText={"X " + variableName} iconName="fas fa-gear" placeholderText="X Value" ariaText="X Value" />
                         
-                    </div>
-                    <div className="flex flex-col flex-auto">
+                    {/* </div> */}
+                    {/* <div className="flex flex-col flex-auto"> */}
                         
                         <Input value={state.y_value} onChange={onChange} name="y_value" labelText={"Y " + variableName} iconName="fas fa-gear" placeholderText="Y Value" ariaText="Y Value" />
                         
-                    </div>
-                    <div className="flex flex-col flex-auto">
+                    {/* </div> */}
+                    {/* <div className="flex flex-col flex-auto"> */}
                         
                         <Input value={state.z_value} onChange={onChange} name="z_value" labelText={"Z " + variableName} iconName="fas fa-gear" placeholderText="Z Value" ariaText="Z Value" />
                         
-                    </div>
-                    <div className="flex flex-col flex-auto place-content-center" style={{"minWidth": "49%"}}>
+                    {/* </div> */}
+                    {/* <div className="flex flex-col flex-auto place-content-center" style={{"minWidth": "49%"}}> */}
                         <button type="submit" className="
                         
-                        pt-2.5
-                        pb-3
-                        px-2
-                        mt-3
+                            pt-2.5
+                            pb-3
+                            px-2
+                            mt-3
 
-                        text-base
-                        font-medium
-                        text-white
-                        uppercase
-                        
-                        rounded
-                        shadow-md
-                        bg-blue-600
-                        hover:bg-blue-700 hover:shadow-lg
-                        focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
-                        active:bg-blue-800 active:shadow-lg
-                        transition
-                        duration-300
-                        ease-in-out" >
+                            text-base
+                            font-semibold
+                            text-white
+                            uppercase
+                            
+                            rounded
+                            shadow-md
+                            bg-blue-600
+                            hover:bg-blue-700 hover:shadow-lg
+                            focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+                            active:bg-blue-800 active:shadow-lg
+                            transition
+                            duration-300
+                            ease-in-out" >
                             Send
                         </button>
                             
-                    </div>
+                    {/* </div> */}
                     
                 </fieldset>
             </form>

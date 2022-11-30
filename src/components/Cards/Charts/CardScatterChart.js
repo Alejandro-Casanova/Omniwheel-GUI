@@ -334,7 +334,7 @@ const CardScatter = ({
                     </div>
                 </div>
                 </div>
-                <div className="p-4 flex-auto h-22 aspect-square">
+                <div className="p-4 flex-auto sm:mx-4 md:mx-4 lg:mx-8 xl:mx-8 2xl:mx-28">
                 {/* ChartJS */}
                 
                     {/* <StaticImage

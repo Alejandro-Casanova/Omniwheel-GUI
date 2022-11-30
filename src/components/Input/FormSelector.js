@@ -9,8 +9,8 @@ const FormSelector = ({
     formData = [
         {cmd_name: "MOT",  formName: "mot",  variableName: "Speed",     titleText: "Motor Speeds",             subTitleText: ""},
         {cmd_name: "VEL",  formName: "vel",  variableName: "Speed",     titleText: "Robot Speeds",             subTitleText: ""},
-        {cmd_name: "POS",  formName: "pos",  variableName: "Pos",       titleText: "Robot Position",           subTitleText: ""},
-        {cmd_name: "POSC", formName: "posc", variableName: "Pos",       titleText: "Robot Cartesian Position", subTitleText: ""},
+        {cmd_name: "POS",  formName: "pos",  variableName: "Position",  titleText: "Robot Position",           subTitleText: ""},
+        {cmd_name: "POSC", formName: "posc", variableName: "Position",  titleText: "Robot Cartesian Position", subTitleText: ""},
     ], 
     deviceId = null,
 }) => {
@@ -33,7 +33,7 @@ const FormSelector = ({
                                     className={
                                         "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
                                         (openTab === (index + 1)
-                                            ? "text-white bg-lightBlue-800"
+                                            ? "text-white bg-blue-600 //bg-lightBlue-800"
                                             //: "text-lightBlue-600 bg-white"
                                             : "text-blueGray-300 bg-myGray-3"
                                         )

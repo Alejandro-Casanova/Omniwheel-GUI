@@ -36,24 +36,31 @@ const Layout = ({children, location}) => {
   // }, [location.pathname]);
 
   return (
-    <>
+    <div className="bg-myGray-1 min-h-screen">
       <Sidebar2 currentPath={location.pathname} />
-      <div className={"relative md:ml-20" +
+      <div className={"relative md:ml-20 h-full" +
                       //" bg-blueGray-100" 
                       " bg-myGray-1" 
                       }>
         <AdminNavbar />
         {/* Header */}
         <HeaderStats />
-        <div className="px-4 md:px-10 mx-auto h-full w-full 
+        <div className="flex flex-col justify-end px-4 md:px-10 mx-auto w-full
                         -mt-36
                         //mt-0
                         ">
-          {children}
-          <FooterAdmin />
+          {/* <div className="flex flex-col justify-between h-full"> */}
+            <div className="flex-1 grow shrink">
+              {children}
+            </div>
+            <div className="flex-1 grow shrink">
+              <FooterAdmin />
+            </div>
+          {/* </div> */}
+          
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

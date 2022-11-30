@@ -280,7 +280,7 @@ export default function CardRadarChart({
         </div>
         <div className="p-4 flex-auto">
           {/* ChartJS */}
-          <div className="relative h-350-px">
+          <div className="relative aspect-video">
             {/* <canvas id="line-chart"></canvas> */}
             {/* <Line options={options} data={_data} /> */}
             <canvas id="myRadarChart"></canvas>

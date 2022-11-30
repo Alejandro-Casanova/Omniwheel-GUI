@@ -31,11 +31,11 @@ const Robots = () => {
         </div>
         
         <div className="flex flex-wrap items-center">
-            <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
-                <CardLineChart title="Velocity Data" subTitle="3D Components" deviceId={selectedDevice}/>
-                {/* <CardRadarChart title="Radar Data" subTitle="LIDAR Chart" deviceId={selectedDevice} /> */}
+            <div className="w-full xl:w-8/12 mb-12 xl:mb-0 px-4">
+                {/* <CardLineChart title="Velocity Data" subTitle="3D Components" deviceId={selectedDevice}/> */}
+                <CardRadarChart title="Radar Data" subTitle="LIDAR Chart" deviceId={selectedDevice} />
             </div>
-            <div className="w-full xl:w-6/12 mb-12 xl:mb-0 px-4">
+            <div className="w-full xl:w-4/12 mb-12 xl:mb-0 px-4">
                 <FormSelector deviceId={selectedDevice} />
             </div>
         </div>
