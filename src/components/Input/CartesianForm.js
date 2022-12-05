@@ -67,7 +67,7 @@ const CartesianForm = ({
                     {titleText}
                 </h2>      
                 <legend className="mb-2" >{subTitleText}</legend>
-                <fieldset className="flex flex-col flex-wrap place-content-center w-full gap-3 px-8">
+                <fieldset className="flex flex-col flex-wrap place-content-center w-full px-8">
                     {/* <div className="flex flex-col flex-auto"> */}
                         
                     <Input value={state.x_value} onChange={onChange} name="x_value" labelText={"X " + variableName} iconName="fas fa-gear" placeholderText="X Value" ariaText="X Value" />

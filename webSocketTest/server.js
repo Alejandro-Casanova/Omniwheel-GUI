@@ -14,6 +14,27 @@ import os from 'os'
 
 import net from "net"
 
+//Añade ceros a la izquierda para formatear bien los mensajes
+function zeros(num, size) {
+  if(num < 0){
+      num = -num;
+      num = num.toString();
+      while (num.length < size-1) num = "0" + num;
+      num = "1" + num; 
+  }
+  else{
+      num = num.toString();
+      // console.log(num)
+      while (num.length < size-1){
+        num = "0" + num;
+        // console.log(num)
+      } 
+      num = "0" + num;  
+      // console.log(num)
+  }
+  return num;
+}
+
 //Pasa los mensajes al formato que entiende el arduino
 function parse_to_arduino(command_type, rw , data){
 
@@ -437,7 +458,11 @@ function onSocketConnect(ws) {
 
         case "command":{
           var string = parse_to_arduino(parsed_message.payload.cmd_type, parsed_message.payload.rw, parsed_message.payload.data);
-          Arduino_clients[parsed_message.device_id].write(string);
+          // console.log(Arduino_clients);
+          // console.log(parsed_message.payload.device_id)
+          // console.log(Arduino_clients[parsed_message.device_id])
+          console.log("String to Send: ", string)
+          Arduino_clients[parsed_message.payload.device_id].write(string);
 
           break;
         }
@@ -497,6 +522,7 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
   
   //Arduino_clients.add(client);
   const current_index = add_client(client, Arduino_clients);
+  // console.log(Arduino_clients)
   //Arduino_data[current_index] = new ArduinoDataObject("unkown", "unknown");
 
   client.setTimeout(30000);   // 30s
@@ -589,6 +615,7 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
     //Arduino_clients.delete(client);
     delete Arduino_clients[current_index];
     Arduino_clients[current_index] = null;
+    myArduinoData.clear(current_index)
     
     console.log('Client disconnect.');
     

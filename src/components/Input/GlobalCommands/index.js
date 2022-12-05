@@ -1,3 +1,5 @@
+// https://github.com/linuswillner/react-console-emulator
+
 import React from 'react'
 import Terminal from "./Terminal.jsx"
 

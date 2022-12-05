@@ -188,7 +188,7 @@ export default function DeviceTable({ color }) {
                   <TableItem 
                     color="dark" 
                     //imageName="arduino-mkr-wifi-1010.jpg" 
-                    batteryLevel={_rxData[id].status.battery} 
+                    batteryLevel={parseInt(_rxData[id].status.battery)} 
                     deviceName={_rxData[id].info.name}
                     status={_rxData[id].status.connection} 
                     deviceID={parseInt(id)}

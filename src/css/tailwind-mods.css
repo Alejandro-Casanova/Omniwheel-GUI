@@ -2720,6 +2720,10 @@ select {
     padding-top: 0px;
   }
 
+  .sm\:pt-24 {
+    padding-top: 6px;
+  }
+
   .sm\:w-6\/12 {
     width: 50%;
   }
@@ -2838,6 +2842,10 @@ select {
 
   .md\:pr-12 {
     padding-right: 3rem;
+  }
+
+  .md\:pt-24 {
+    padding-top: 6rem;
   }
 
   .md\:pt-32 {
