@@ -14,17 +14,36 @@ import os from 'os'
 
 import net from "net"
 
-//Añade ceros a la izquierda para formatear bien los mensajes
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/// AUXILIARY FUNCTIONS /////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Adds ceros to the left to format message (always 8 digits)
+// FOR SAFETY: if a number is longer than "size", it will be overflowed to 0
 function zeros(num, size) {
   if(num < 0){
       num = -num;
       num = num.toString();
+
+      // Check overflow
+      if(num.length >= size){
+        num = "0";
+      }
+
       while (num.length < size-1) num = "0" + num;
       num = "1" + num; 
   }
   else{
       num = num.toString();
+
+      // Check overflow
       // console.log(num)
+      // console.log("len: ", num.length)
+      if(num.length >= size){
+        num = "0";
+      }
+
+      console.log(num)
       while (num.length < size-1){
         num = "0" + num;
         // console.log(num)
@@ -35,7 +54,7 @@ function zeros(num, size) {
   return num;
 }
 
-//Pasa los mensajes al formato que entiende el arduino
+// Parse messages to Arduino format
 function parse_to_arduino(command_type, rw , data){
 
   let header;
@@ -89,10 +108,14 @@ function parse_to_arduino(command_type, rw , data){
     
   }
 
-  var s = `${header}::${zeros(data.value1,6)}::${zeros(data.value2,6)}::${zeros(data.value3,6)}`;
+  var s = `${header}:${zeros(data.value1,8)}:${zeros(data.value2,8)}:${zeros(data.value3,8)}`;
   return s;
 
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 const http_server = http.createServer(accept).listen(8080, () => {
   console.log("Opened http server on ", http_server.address());
@@ -172,7 +195,7 @@ class ArduinoData {
 
         // Send stashed data
         this.#data.forEach((value, index) => {
-          if(value !== undefined){
+          if(value !== undefined && value !== null){
             sendData(Browser_clients[clientID], index, dataID, value[dataID]);
           }
         })
@@ -222,19 +245,25 @@ class ArduinoDataObject {
       connection: "unknown",
       battery: 0
     }
-    this.position = {
-      pos: [],
-      time: 0
-    };
-    this.velocity = {
-      vel: [],
-      time: 0,
-    }
-    this.radar = {
-      amplitude: 0,
-      angle: 0,
-      time: 0
-    }
+    this.position = [
+      // {
+      //   pos: [],
+      //   time: 0
+      // }
+    ]
+    this.velocity = [
+      // {
+      //   vel: [],
+      //   time: 0,
+      // }
+    ]
+    this.radar = [
+      // {
+      //   amplitude: 0,
+      //   angle: 0,
+      //   time: 0
+      // }
+    ]
     this.listeners = new ArduinoListenerObject();
   }
 }
@@ -462,7 +491,18 @@ function onSocketConnect(ws) {
           // console.log(parsed_message.payload.device_id)
           // console.log(Arduino_clients[parsed_message.device_id])
           console.log("String to Send: ", string)
-          Arduino_clients[parsed_message.payload.device_id].write(string);
+
+          if(parsed_message.payload.device_id >= 0){
+            Arduino_clients[parsed_message.payload.device_id].write(string);
+          }else{
+            for(let client of Arduino_clients) {
+              //client.send(JSON.stringify(parsed));
+              if(client !== null){
+                client.write(string);
+              }
+            }
+          }
+          
 
           break;
         }
@@ -538,6 +578,7 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
 
       switch(parsed_message.msg_type){
 
+        case "data":
         case "test":{
           const pos_data = {"pos": parsed_message.pos, "time": parsed_message.time};
           const vel_data = {"vel": parsed_message.vel, "time": parsed_message.time};

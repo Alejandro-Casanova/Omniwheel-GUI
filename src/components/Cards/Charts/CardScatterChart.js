@@ -95,8 +95,15 @@ const rxDataReducer = (state, action) => {
             }
         }
         if(action_parsed.payload.data_type === "position"){
-            clonedData[action_parsed.payload.device_id].x = action_parsed.payload.data.pos[0];
-            clonedData[action_parsed.payload.device_id].y = action_parsed.payload.data.pos[1];
+            try{
+                clonedData[action_parsed.payload.device_id].x = action_parsed.payload.data.pos[0];
+                clonedData[action_parsed.payload.device_id].y = action_parsed.payload.data.pos[1];
+            }catch(err){
+                // Data is an array, get just the last one
+                clonedData[action_parsed.payload.device_id].x = (action_parsed.payload.data.pop()).pos[0];
+                clonedData[action_parsed.payload.device_id].y = (action_parsed.payload.data.pop()).pos[1];
+            }
+            
         }else if(action_parsed.payload.data_type === "info"){
             clonedData[action_parsed.payload.device_id].name = action_parsed.payload.data.name;
         }
@@ -152,7 +159,24 @@ const CardScatter = ({
         _dispatch_txData({msg_type: "subscribe", payload: {device_id: -1, data_type: "position"} });
         _dispatch_txData({msg_type: "subscribe", payload: {device_id: -1, data_type: "info"} });
 
+        const timer = setInterval(() => {
+            _dispatch_txData({
+                msg_type: "command",
+                payload: {
+                    rw: "r",
+                    cmd_type: "VEL",
+                    device_id: -1,
+                    data: {
+                        value1: 0,
+                        value2: 0,
+                        value3: 0
+                    }
+                }
+            })
+        }, 500)
+
         return () => {
+            clearInterval(timer);
             _dispatch_txData({msg_type: "unsubscribe", payload: {device_id: -1, data_type: "position"} });    
             _dispatch_txData({msg_type: "unsubscribe", payload: {device_id: -1, data_type: "info"} });
         }
@@ -195,6 +219,13 @@ const CardScatter = ({
                   mode: "dataset",
                   intersect: true,
                 },
+            },
+            elements:{
+                point: {
+                  radius: 10,
+                  hoverRadius: 12,
+                  hitRadius: 2,
+                }
             },
             scales: {
                 x: {

@@ -66,6 +66,8 @@ const rxDataReducer = (state, action) => {
 
   const action_parsed = JSON.parse(action)
 
+  console.log(action_parsed);
+
   // Checks if message is an object
   if(typeof action_parsed !== 'object' && action.constructor !== Object){
     console.log("Not an object:")
@@ -170,6 +172,7 @@ export default function CardRadarChart({
       animation: false,
       //parsing: false, //Important: datasets must be array of objects with x and y key-value pairs
       maintainAspectRatio: false,
+      events: [],
       responsive: true,
       plugins: {
         legend: {
@@ -190,20 +193,27 @@ export default function CardRadarChart({
         point: {
           radius: (value) => { // Just draw points with value > 0
             if(value.raw > 0)
-              return 1;
+              return 4;
           },
           hoverRadius: (value) => { // Just draw points with value > 0
             if(value.raw > 0)
-              return 1;
+              return 4;
           },
-          hitRadius: (value) => { // Just draw points with value > 0
-            if(value.raw > 0)
-              return 1;
-          },
-          hoverBorderWidth: (value) => { // Just draw points with value > 0
-            if(value.raw > 0)
-              return 1;
-          },
+          hitRadius: 0,
+          // (value) => { // Just draw points with value > 0
+          //   if(value.raw > 0)
+          //     return 4;
+          // },
+          hoverBorderWidth: 0,
+          // (value) => { // Just draw points with value > 0
+          //   if(value.raw > 0)
+          //     return 4;
+          // },
+          borderWidth: 0,
+          // (value) => { // Just draw points with value > 0
+          //   if(value.raw > 0)
+          //     return 4;
+          // },
         },
         line: {
           borderWidth: 0,
