@@ -58,6 +58,7 @@ function zeros(num, size) {
 function parse_to_arduino(command_type, rw , data){
 
   let header;
+  var s;
 
   if(rw == 'w'){
     switch(command_type){
@@ -83,6 +84,9 @@ function parse_to_arduino(command_type, rw , data){
         return null;
 
     }
+
+    s = `${header}:${zeros(data.value1,8)}:${zeros(data.value2,8)}:${zeros(data.value3,8)}`;
+
   }
   else if (rw == 'r'){
 
@@ -106,9 +110,10 @@ function parse_to_arduino(command_type, rw , data){
         
     }
     
+    s = `${header}:${zeros(0,8)}:${zeros(0,8)}:${zeros(0,8)}`;
+
   }
 
-  var s = `${header}:${zeros(data.value1,8)}:${zeros(data.value2,8)}:${zeros(data.value3,8)}`;
   return s;
 
 }
