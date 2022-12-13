@@ -99,6 +99,9 @@ const rxDataReducer = (state, action) => {
                 clonedData[action_parsed.payload.device_id].x = action_parsed.payload.data.pos[0];
                 clonedData[action_parsed.payload.device_id].y = action_parsed.payload.data.pos[1];
             }catch(err){
+                if(action_parsed.payload.data.length <= 0){
+                    return clonedData;
+                }
                 // Data is an array, get just the last one
                 clonedData[action_parsed.payload.device_id].x = (action_parsed.payload.data.pop()).pos[0];
                 clonedData[action_parsed.payload.device_id].y = (action_parsed.payload.data.pop()).pos[1];

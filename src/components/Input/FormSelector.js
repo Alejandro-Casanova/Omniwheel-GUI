@@ -1,8 +1,32 @@
-import React from "react";
+import React, { useReducer } from "react";
 import PropTypes from "prop-types";
 import CartesianForm from "./CartesianForm";
+import useWebSocket from "../WebSocket/useWebSocket";
 
 //const forms = ["Motor Speeds", "Robot Speeds", "Robot Position", "Robot Cartesian Position"]
+
+const savedCommandsReducer = (state, action) => {
+    const clonedData = [...state]
+
+    clonedData.unshift(action)
+
+    if(clonedData.length > 4){
+        clonedData.pop();
+    }
+
+    return clonedData;
+}
+
+const savedCommandsInit = (initVal) => {
+    if (initVal == null){
+        return [
+            // {cmd_name: "MOT",  cmd_text: "Motor Speeds",  val1: 0, val2: 0, val3: 0},
+            // {cmd_name: "VEL",  cmd_text: "Robot Speeds",  val1: 0, val2: 0, val3: 0},
+        ];
+    }
+
+    return null;
+}
 
 const FormSelector = ({
     forms = ["Motor Speeds", "Robot Speeds", "Robot Position", "Robot Cartesian Position"],
@@ -14,7 +38,9 @@ const FormSelector = ({
     ], 
     deviceId = null,
 }) => {
-    const [openTab, setOpenTab] = React.useState(2);
+    const [openTab, setOpenTab] = React.useState(1);
+    const [savedCommands, savedCommandsDispatcher] = useReducer(savedCommandsReducer, null, savedCommandsInit)
+    const [_dispatch_txData] = useWebSocket();
 
     console.log("Form Data: ", formData);
     console.log("Forms: ", forms);
@@ -110,7 +136,7 @@ const FormSelector = ({
                     </a>
                     </li> */}
                 </div>
-                <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
+                <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-2 shadow-lg rounded">
                     <div className="flex-auto {/*px-4 py-5*/} ">
                         <div className="tab-content tab-space">
                             {
@@ -119,7 +145,7 @@ const FormSelector = ({
                                         <CartesianForm cmd_name={currentValue.cmd_name} formName={currentValue.formName} 
                                             variableName={currentValue.variableName} titleText={currentValue.titleText}
                                             subTitleText={currentValue.subTitleText} 
-                                            deviceId={deviceId}
+                                            deviceId={deviceId} sentCommandDispatcher={savedCommandsDispatcher}
                                         />
                                     </div>
                                 ))
@@ -158,6 +184,111 @@ const FormSelector = ({
                         </div>
                     </div>
                 </div>
+
+                <div
+                    className="flex flex-wrap items-center flex-row gap-2 mb-0 list-none pb-4"
+                    role="tablist"
+                >   
+                    <div  className="flex-initial text-center">
+                        <button type="submit" 
+                            onClick={e => {
+                                e.preventDefault();
+                                if(deviceId !== null){
+                                    _dispatch_txData({
+                                        msg_type: "command",
+                                        payload: {
+                                            rw: "w",
+                                            cmd_type: "MOT",
+                                            device_id: deviceId,
+                                            data: {
+                                                value1: 0,
+                                                value2: 0,
+                                                value3: 0
+                                            }
+                                        }
+                                    })
+                                }
+                            }}
+                            // data-toggle="tab"
+                            // href={"#link" + (index + 1)}
+                            // role="tablist"
+                            className="                        
+                                pt-3.5
+                                pb-3.5
+                                px-4
+                                mt-2
+
+                                text-lg
+                                font-bold
+                                text-white
+                                
+                                rounded
+                                shadow-md
+                                bg-red-600
+                                hover:bg-red-700 hover:shadow-lg
+                                focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0
+                                active:bg-red-800 active:shadow-lg
+                                transition
+                                duration-300
+                                ease-in-out" 
+                        >
+                            STOP
+                        </button>
+                    </div>
+                    {
+                        savedCommands.map((currentValue, index) => (
+                            <div key={index}  className="flex-initial text-center">
+                                <button type="submit" 
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        if(deviceId !== null){
+                                            _dispatch_txData({
+                                                msg_type: "command",
+                                                payload: {
+                                                    rw: "w",
+                                                    cmd_type: currentValue.cmd_name,
+                                                    device_id: deviceId,
+                                                    data: {
+                                                        value1: currentValue.val1,
+                                                        value2: currentValue.val2,
+                                                        value3: currentValue.val3
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    }}
+                                    // data-toggle="tab"
+                                    // href={"#link" + (index + 1)}
+                                    // role="tablist"
+                                    className="                        
+                                        pt-2
+                                        pb-2
+                                        px-2
+                                        mt-2
+
+                                        text-sm
+                                        font-semibold
+                                        text-white
+                                        
+                                        
+                                        rounded
+                                        shadow-md
+                                        bg-blue-600
+                                        hover:bg-blue-700 hover:shadow-lg
+                                        focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+                                        active:bg-blue-800 active:shadow-lg
+                                        transition
+                                        duration-300
+                                        ease-in-out" 
+                                >
+                                    {currentValue.cmd_text}<br/>
+                                    {currentValue.val1 + ":" + currentValue.val2 + ":" + currentValue.val3}
+                                </button>
+                            </div>
+                        ))
+                    }
+                </div>
+
             </div>
         </div>
         //</>

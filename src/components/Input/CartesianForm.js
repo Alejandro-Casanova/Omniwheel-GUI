@@ -24,6 +24,7 @@ const CartesianForm = ({
     variableName = "Default",
     cmd_name, // Important: command type sent to proxy
     deviceId = null,
+    sentCommandDispatcher,
     
 
 }) => {
@@ -40,7 +41,8 @@ const CartesianForm = ({
             return;
         }
         console.log("Submited state: %s", JSON.stringify(state));
-        _dispatch_txData({
+
+        const cmd_to_send = {
             msg_type: "command",
             payload: {
                 rw: "w",
@@ -52,6 +54,15 @@ const CartesianForm = ({
                     value3: state.z_value
                 }
             }
+        }
+
+        _dispatch_txData(cmd_to_send)
+        sentCommandDispatcher({
+            cmd_name: cmd_name,
+            cmd_text: titleText,
+            val1: state.x_value,
+            val2: state.y_value,
+            val3: state.z_value,
         })
         
     }
@@ -123,6 +134,7 @@ CartesianForm.propTypes = {
     variableName: PropTypes.string,
     cmd_name: PropTypes.string.isRequired,
     deviceId: PropTypes.number,
+    sentCommandDispatcher: PropTypes.func.isRequired,
 }
 
 export default CartesianForm;
