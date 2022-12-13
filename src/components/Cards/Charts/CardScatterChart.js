@@ -96,15 +96,15 @@ const rxDataReducer = (state, action) => {
         }
         if(action_parsed.payload.data_type === "position"){
             try{
-                clonedData[action_parsed.payload.device_id].x = action_parsed.payload.data.pos[0];
-                clonedData[action_parsed.payload.device_id].y = action_parsed.payload.data.pos[1];
+                clonedData[action_parsed.payload.device_id].x = action_parsed.payload.data.pos[0]/1000;
+                clonedData[action_parsed.payload.device_id].y = action_parsed.payload.data.pos[1]/1000;
             }catch(err){
                 if(action_parsed.payload.data.length <= 0){
                     return clonedData;
                 }
                 // Data is an array, get just the last one
-                clonedData[action_parsed.payload.device_id].x = (action_parsed.payload.data.pop()).pos[0];
-                clonedData[action_parsed.payload.device_id].y = (action_parsed.payload.data.pop()).pos[1];
+                clonedData[action_parsed.payload.device_id].x = (action_parsed.payload.data.pop()).pos[0]/1000;
+                clonedData[action_parsed.payload.device_id].y = (action_parsed.payload.data.pop()).pos[1]/1000;
             }
             
         }else if(action_parsed.payload.data_type === "info"){
@@ -162,7 +162,7 @@ const CardScatter = ({
         _dispatch_txData({msg_type: "subscribe", payload: {device_id: -1, data_type: "position"} });
         _dispatch_txData({msg_type: "subscribe", payload: {device_id: -1, data_type: "info"} });
 
-        const timer = setInterval(() => {
+        // const timer = setInterval(() => {
             _dispatch_txData({
                 msg_type: "command",
                 payload: {
@@ -176,10 +176,10 @@ const CardScatter = ({
                     }
                 }
             })
-        }, 500)
+        // }, 500)
 
         return () => {
-            clearInterval(timer);
+            // clearInterval(timer);
             _dispatch_txData({msg_type: "unsubscribe", payload: {device_id: -1, data_type: "position"} });    
             _dispatch_txData({msg_type: "unsubscribe", payload: {device_id: -1, data_type: "info"} });
         }

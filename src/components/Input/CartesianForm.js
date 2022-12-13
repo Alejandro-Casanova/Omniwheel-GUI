@@ -49,9 +49,9 @@ const CartesianForm = ({
                 cmd_type: cmd_name,
                 device_id: deviceId,
                 data: {
-                    value1: state.x_value,
-                    value2: state.y_value,
-                    value3: state.z_value
+                    value1: (state.x_value == "" ? 0 : state.x_value),
+                    value2: (state.y_value == "" ? 0 : state.y_value),
+                    value3: (state.z_value == "" ? 0 : state.z_value)
                 }
             }
         }
@@ -60,9 +60,9 @@ const CartesianForm = ({
         sentCommandDispatcher({
             cmd_name: cmd_name,
             cmd_text: titleText,
-            val1: state.x_value,
-            val2: state.y_value,
-            val3: state.z_value,
+            val1: (state.x_value == "" ? 0 : state.x_value),
+            val2: (state.y_value == "" ? 0 : state.y_value),
+            val3: (state.z_value == "" ? 0 : state.y_value),
         })
         
     }

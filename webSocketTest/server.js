@@ -14,6 +14,8 @@ import os from 'os'
 
 import net from "net"
 
+const MOTOR_PULSES_PER_REVOLUTION = 4000
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /// AUXILIARY FUNCTIONS /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,6 +23,7 @@ import net from "net"
 // Adds ceros to the left to format message (always 8 digits)
 // FOR SAFETY: if a number is longer than "size", it will be overflowed to 0
 function zeros(num, size) {
+  num = num == "" ? 0 : parseInt(num)
   if(num < 0){
       num = -num;
       num = num.toString();
@@ -65,7 +68,8 @@ function parse_to_arduino(command_type, rw , data){
       
       case 'MOT':
         header = "OWR";
-        break;
+        s = `${header}:${zeros((data.value1*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}:${zeros((data.value2*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}:${zeros((data.value3*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}`;
+        return s;
 
       case 'VEL':
         header = "OWR_CI";
@@ -151,7 +155,10 @@ class ArduinoData {
       }
 
       // Set Value
-      if(Array.isArray(this.#data[deviceID][dataID])){
+      if( dataID == "gpio" ){
+        // GPIO Data
+        this.#data[deviceID][dataID] = value;
+      }else if(Array.isArray(this.#data[deviceID][dataID])){
         // Is array, push into FIFO
         if(this.#data[deviceID][dataID].length > 50){
           this.#data[deviceID][dataID].shift();
@@ -267,6 +274,13 @@ class ArduinoDataObject {
       //   amplitude: 0,
       //   angle: 0,
       //   time: 0
+      // }
+    ]
+    this.gpio = [
+      // {
+      //   name: "",
+      //   num: "",
+      //   val: ""
       // }
     ]
     this.listeners = new ArduinoListenerObject();
@@ -603,6 +617,11 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
         case "info":{
           const data = { name: parsed_message.name, type: parsed_message.robot_type}
           myArduinoData.set(current_index, "info", data);
+          break;
+        }
+
+        case "gpio":{
+          myArduinoData.set(current_index, "gpio", parsed_message.gpio);
           break;
         }
 

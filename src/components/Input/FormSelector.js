@@ -31,9 +31,9 @@ const savedCommandsInit = (initVal) => {
 const FormSelector = ({
     forms = ["Motor Speeds", "Robot Speeds", "Robot Position", "Robot Cartesian Position"],
     formData = [
-        {cmd_name: "MOT",  formName: "mot",  variableName: "Speed",     titleText: "Motor Speeds",             subTitleText: ""},
-        {cmd_name: "VEL",  formName: "vel",  variableName: "Speed",     titleText: "Robot Speeds",             subTitleText: ""},
-        {cmd_name: "POS",  formName: "pos",  variableName: "Position",  titleText: "Robot Position",           subTitleText: ""},
+        {cmd_name: "MOT",  formName: "mot",  variableName: "Speed (rad/s)",     titleText: "Motor Speeds",             subTitleText: ""},
+        {cmd_name: "VEL",  formName: "vel",  variableName: "Speed (mm/s)",     titleText: "Robot Speeds",             subTitleText: ""},
+        {cmd_name: "POS",  formName: "pos",  variableName: "Position (mm)",  titleText: "Robot Relative Position",           subTitleText: ""},
         {cmd_name: "POSC", formName: "posc", variableName: "Position",  titleText: "Robot Cartesian Position", subTitleText: ""},
     ], 
     deviceId = null,
