@@ -12,7 +12,7 @@ export default function FooterAdmin() {
                 {/* Copyright © 2022 {" "} */}
                 2022 {" "}
                 <a
-                  href="#pablo"
+                  href="#inactive"
                   className="text-blueGray-300 hover:text-blueGray-500 text-sm font-semibold py-1"
                 >
                   Inordine Labs

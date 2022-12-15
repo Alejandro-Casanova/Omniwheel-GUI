@@ -17,7 +17,7 @@ const Input = ({
             </span>
             <label className="w-full text-blueGray-300">
                 {labelText}
-                <input type="text" name={name} value={value} onChange={onChange} placeholder={placeholderText} aria-describedby={ariaText} 
+                <input autoComplete="off" type="text" name={name} value={value} onChange={onChange} placeholder={placeholderText} aria-describedby={ariaText} 
                     className="px-3 py-3 my-2 placeholder-blueGray-600 text-blueGray-300 relative bg-myGray-1 rounded text-sm shadow outline-none focus:outline-none focus:shadow-outline w-full pl-10"
                 />
             </label>

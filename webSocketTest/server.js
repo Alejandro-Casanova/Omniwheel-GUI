@@ -24,6 +24,11 @@ const MOTOR_PULSES_PER_REVOLUTION = 4000
 // FOR SAFETY: if a number is longer than "size", it will be overflowed to 0
 function zeros(num, size) {
   num = num == "" ? 0 : parseInt(num)
+  // console.log(num)
+  if( isNaN(num) ){
+    // console.log("TRUE")
+    num = 0
+  }
   if(num < 0){
       num = -num;
       num = num.toString();
@@ -46,7 +51,7 @@ function zeros(num, size) {
         num = "0";
       }
 
-      console.log(num)
+      // console.log(num)
       while (num.length < size-1){
         num = "0" + num;
         // console.log(num)
@@ -293,7 +298,8 @@ class ArduinoListenerObject {
     this.status = new Set(),
     this.position = new Set(),
     this.velocity = new Set(),
-    this.radar = new Set()
+    this.radar = new Set(),
+    this.gpio = new Set()
   }
 }
 

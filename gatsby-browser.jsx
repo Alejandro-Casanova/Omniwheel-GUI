@@ -6,7 +6,7 @@ import { withStore } from "./src/components/Store/Store.jsx";
 // Import font awesome icons. Must install package first (npm i @fortawesome/fontawesome-free)
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-import Layout from "./src/layouts/layout1.js";
+import Layout from "./src/layouts/layout.js";
 
 export const onRouteUpdate = ({ location, prevLocation }) => {
   console.log("new pathname", location.pathname)

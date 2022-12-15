@@ -4,8 +4,8 @@ import React from "react";
 // components
 
 import AdminNavbar from "../components/Navbars/AdminNavbar.js";
-import Sidebar2 from "../components/Sidebar/Sidebar2.js";
-import HeaderStats from "../components/Headers/HeaderStats.js";
+import Sidebar from "../components/Sidebar/Sidebar.js";
+// import HeaderStats from "../components/Headers/HeaderStats.js";
 import FooterAdmin from "../components/Footers/FooterAdmin.js";
 
 //import Footer from "../components/Footers/Footer.js";
@@ -37,7 +37,7 @@ const Layout = ({children, location}) => {
 
   return (
     <div className="relative bg-myGray-1 min-h-screen h-full">
-      <Sidebar2 currentPath={location.pathname} />
+      <Sidebar currentPath={location.pathname} />
       <div className={"relative flex flex-col md:ml-20 min-h-screen h-full" +
                       //" bg-blueGray-100" 
                       " bg-myGray-1"
