@@ -73,6 +73,7 @@ function parse_to_arduino(command_type, rw , data){
       
       case 'MOT':
         header = "OWR";
+        // Format and convert rad/s to pulses/s
         s = `${header}:${zeros((data.value1*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}:${zeros((data.value2*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}:${zeros((data.value3*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}`;
         return s;
 
