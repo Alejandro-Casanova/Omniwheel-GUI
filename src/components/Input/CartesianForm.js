@@ -1,8 +1,11 @@
+////////////////////////////////////////////////////////////////////////////
+// Single form for sending commands with three values as payload ///////////
+////////////////////////////////////////////////////////////////////////////
+
 import React, { useCallback, useReducer } from "react";
 import PropTypes from "prop-types";
 import Input from "./Input";
 import useWebSocket from "../WebSocket/useWebSocket";
-//import { useStore } from "../Store/Store.jsx";
 
 const NUM_OF_SAVED_COMMANDS = 6
 
@@ -61,7 +64,6 @@ const CartesianForm = ({
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        //alert('Your favorite flavor is: ' + this.state.value);
         if(deviceId === null || deviceId === undefined){
             console.log("Could not send command, deviceId: ", deviceId);
             return;
@@ -115,44 +117,32 @@ const CartesianForm = ({
                                 
                             <Input value={state.x_value} onChange={onChange} name="x_value" labelText={"X " + variableName} iconName="fas fa-gear" placeholderText="X Value" ariaText="X Value" />
                                 
-                            {/* </div> */}
-                            {/* <div className="flex flex-col flex-auto"> */}
+                            <Input value={state.y_value} onChange={onChange} name="y_value" labelText={"Y " + variableName} iconName="fas fa-gear" placeholderText="Y Value" ariaText="Y Value" />
+ 
+                            <Input value={state.z_value} onChange={onChange} name="z_value" labelText={"Z " + variableName} iconName="fas fa-gear" placeholderText="Z Value" ariaText="Z Value" />
                                 
-                                <Input value={state.y_value} onChange={onChange} name="y_value" labelText={"Y " + variableName} iconName="fas fa-gear" placeholderText="Y Value" ariaText="Y Value" />
-                                
-                            {/* </div> */}
-                            {/* <div className="flex flex-col flex-auto"> */}
-                                
-                                <Input value={state.z_value} onChange={onChange} name="z_value" labelText={"Z " + variableName} iconName="fas fa-gear" placeholderText="Z Value" ariaText="Z Value" />
-                                
-                            {/* </div> */}
-                            {/* <div className="flex flex-col flex-auto place-content-center" style={{"minWidth": "49%"}}> */}
-                                <button type="submit" className="
-                                
-                                    pt-2.5
-                                    pb-3
-                                    px-2
-                                    mt-3
+                            <button type="submit" className="
+                                pt-2.5
+                                pb-3
+                                px-2
+                                mt-3
 
-                                    text-base
-                                    font-semibold
-                                    text-white
-                                    uppercase
-                                    
-                                    rounded
-                                    shadow-md
-                                    bg-blue-600
-                                    hover:bg-blue-700 hover:shadow-lg
-                                    focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
-                                    active:bg-blue-800 active:shadow-lg
-                                    transition
-                                    duration-300
-                                    ease-in-out" >
-                                    Send
-                                </button>
-                                    
-                            {/* </div> */}
-                            
+                                text-base
+                                font-semibold
+                                text-white
+                                uppercase
+                                
+                                rounded
+                                shadow-md
+                                bg-blue-600
+                                hover:bg-blue-700 hover:shadow-lg
+                                focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0
+                                active:bg-blue-800 active:shadow-lg
+                                transition
+                                duration-300
+                                ease-in-out" >
+                                Send
+                            </button>
                         </fieldset>
                     </form>
                 </div>
@@ -187,9 +177,7 @@ const CartesianForm = ({
                                         })
                                     }
                                 }}
-                                // data-toggle="tab"
-                                // href={"#link" + (index + 1)}
-                                // role="tablist"
+
                                 className="                        
                                     pt-4
                                     pb-4
@@ -239,9 +227,6 @@ const CartesianForm = ({
                                                     })
                                                 }
                                             }}
-                                            // data-toggle="tab"
-                                            // href={"#link" + (index + 1)}
-                                            // role="tablist"
                                             className="                        
                                                 pt-2
                                                 pb-2

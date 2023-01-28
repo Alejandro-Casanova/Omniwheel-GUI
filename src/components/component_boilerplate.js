@@ -1,18 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Input = ({}) => {
+const component = ({}) => {
     return (
         <div></div>
     );
 }
 
-export default Input;
+export default component;
 
-Input.defaultProps = {
+component.defaultProps = {
     iconName: "fas fa-lock",
 };
   
-Input.propTypes = {
+component.propTypes = {
     iconName: PropTypes.string,
 };

@@ -1,9 +1,8 @@
-// NOT USED
-
-//import React, { useRef, useState, useEffect } from 'react';
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Self-reconnecting websocket component, used in the useWebSocket Custom Hook /////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const URL = "ws://localhost:8080/ws";
-
 
 export default function reconnectingWebSocket() {
     let client;
@@ -77,57 +76,3 @@ export default function reconnectingWebSocket() {
         send: (msg) => client.send(msg),
     };
 }
-
-
-//const client = reconnectingWebSocket();
-
-
-// function useMessages() {
-//     const [messages, setMessages] = useState([]);
-
-//     useEffect(() => {
-//         function handleMessage(message) {
-//             setMessages([...messages, message]);
-//         }
-//         client.on(handleMessage);
-//         return () => client.off(handleMessage);
-//     }, [messages, setMessages]);
-
-//     return messages;
-// }
-
-// function WebSocketDisplay() {
-
-//     const [message, setMessage] = useState('');
-//     const messages = useMessages();
-//     const [isConnected, setIsConnected] = useState(client.isConnected());
-
-//     useEffect(() => {
-//         return client.onStateChange(setIsConnected);
-//     }, [setIsConnected]);
-
-//     useEffect(() => {
-//         if (isConnected) {
-//             client.getClient().send('hi');
-//         }
-//     }, [isConnected]);
-
-//     function sendMessage(e) {
-//         e.preventDefault();
-//         client.getClient().send(message);
-//         setMessage('');
-//     }
-
-//     return (
-//         <div>
-//             <h1>Websocket {isConnected ? 'Connected' : 'Disconnected'}</h1>
-
-//             <form onSubmit={sendMessage}>
-//                 <input value={message} onChange={e => setMessage(e.target.value)} />
-//                 <button type="submit">Send</button>
-//             </form>
-
-//             {messages.map(m => <p>{JSON.stringify(m, null, 2)}</p>)}
-//         </div>
-//     );
-// }

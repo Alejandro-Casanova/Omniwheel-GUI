@@ -1,9 +1,13 @@
+////////////////////////////////////////////////////////////////////////////
+// Displays different alert type depending on argument "type" //////////////
+////////////////////////////////////////////////////////////////////////////
+
 import React from "react";
 import PropTypes from "prop-types";
-import ErrorAlert from "./ErrorAlert";
-import InfoAlert from "./InfoAlert";
-import SuccessAlert from "./SuccessAlert"
-import WarningAlert from "./WarningAlert"
+import ErrorAlert from "./Basic_Alerts/ErrorAlert";
+import InfoAlert from "./Basic_Alerts/InfoAlert";
+import SuccessAlert from "./Basic_Alerts/SuccessAlert"
+import WarningAlert from "./Basic_Alerts/WarningAlert"
 
 export default function DynamicAlert({displayText, type}) {
 

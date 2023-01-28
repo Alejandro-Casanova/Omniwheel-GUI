@@ -1,3 +1,7 @@
+////////////////////////////////////////////////////////////////////////////
+// 2D chart to display line graphs (for example: x,y,z velocities) /////////
+////////////////////////////////////////////////////////////////////////////
+
 import React, { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
@@ -12,10 +16,8 @@ import {
 } from 'chart.js';
 
 import PropTypes from "prop-types";
-//simport { prototype } from "keyv";
 import { Line } from 'react-chartjs-2';
 import useWebSocket from "../../WebSocket/useWebSocket";
-//import defaultMessage from "../../WebSocket/defaultMessage";
 
 ChartJS.register(
   CategoryScale,
@@ -28,18 +30,7 @@ ChartJS.register(
   LineController
 );
 
-//const colors = ["yellow", "magenta", "cyan", "red", "blue", "green"];
 const colors = ["#0004ff", "#ee00bf", "#ff0075", "#ff4631", "#ffac00", "#fff200"];
-
-// RX DATA ////////////////////////////////////////////////////////////////////////
-
-// const initialDisplayData = (intialVal) => {
-//   return {
-//     xVel: [intialVal], 
-//     yVel: [intialVal], 
-//     zVel: [intialVal],
-//   }
-// }
 
 const initRxData = (initialVal) =>  {
 
@@ -74,17 +65,6 @@ const rxDataReducer = (state, action) => {
     return clonedData;
   }
 
-  
-
-  // Checks if message object has a "data_type" key
-  // if(!('data_type' in action_parsed)){
-  //   console.log("Missing data_type")
-  //   console.log(action_parsed)
-  //   return clonedData
-  // }
-
-  // Process message object
-  //if(action_parsed.data_type === 'VEL'){
   try {
     if(action_parsed.msg_type !== "data"){
       throw new Error("Msg type is NOT data");
@@ -133,25 +113,10 @@ export default function CardLineChart({
   yAxisLabel = "Value",
   xAxisLabel = "time (s)",
   deviceId = null,
-  //initialDisplayData = {xVel: [], yVel: [], zVel: []},
-  //xAxisLabels = [0, 1, 2, 3, 4, 5]
 }) {
 
-  // const ws = useRef();
-  // const [rxData, dispatch_rxData] = React.useReducer(rxDataReducer, 0, initRxData)
-  // const [data, setData] = useState({datasets:[]});
   const [_dispatch_txData, _rxData] = useWebSocket(rxDataReducer, null, initRxData);
   const [_data, _setData] = useState({datasets:[]});
-  //console.log("CARDLINE STORE: ", deviceId);
-  // useEffect(() => {
-  //   ws.current = reconnectingWebSocket();
-  //   ws.current.on(dispatch_rxData);
-    
-  //   return () => {
-  //     ws.current.off(dispatch_rxData);
-  //     ws.current.close();
-  //   }
-  // }, []);
 
   // Subscribe to relevant data
   useEffect(() => {
@@ -167,6 +132,7 @@ export default function CardLineChart({
     }
 }, [_dispatch_txData, deviceId]);
   
+  // Update data displayed
   useEffect(() => {
     _setData({
       datasets: Array.from(Object.keys(_rxData), (key, i) => {
@@ -181,19 +147,7 @@ export default function CardLineChart({
     })
   }, [_rxData])
 
-  // const data = {
-  //   datasets: Array.from(Object.keys(rxData), (key, i) => {
-  //     return {
-  //       label: key,
-  //       backgroundColor: colors[i],
-  //       borderColor: colors[i],
-  //       data: rxData[key],
-  //       fill: false,
-  //     }
-  //   }),
-  // }
-
-  //const options = useCallback(() => { return {
+  // Chart configuration
   const options = {
     animation: false,
     parsing: false, //Important: datasets must be array of objects with x and y key-value pairs
@@ -305,7 +259,6 @@ export default function CardLineChart({
         <div className="p-4 flex-auto">
           {/* ChartJS */}
           <div className="relative h-350-px">
-            {/* <canvas id="line-chart"></canvas> */}
             <Line options={options} data={_data} />
           </div>
         </div>
@@ -320,8 +273,4 @@ CardLineChart.propTypes = {
   yAxisLabel : PropTypes.string,
   xAxisLabel : PropTypes.string,
   deviceID : PropTypes.number,
-  //initialDisplayData : PropTypes.objectOf(PropTypes.array).isRequired,
-  //xAxisLabels : PropTypes.array,
 };
-
-//export default CardLineChart;

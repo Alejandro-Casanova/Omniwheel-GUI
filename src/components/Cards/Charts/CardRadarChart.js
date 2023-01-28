@@ -1,3 +1,7 @@
+////////////////////////////////////////////////////////////////////////////
+// Radial chart for Radar information (LIDAR readings) /////////////////////
+////////////////////////////////////////////////////////////////////////////
+
 import React, { useEffect, useState, useMemo } from "react";
 import {
   Chart as ChartJS,
@@ -9,7 +13,8 @@ import {
   LinearScale,
   PointElement,
   Legend,
-  LineController
+  LineController,
+  RadarController
 } from 'chart.js';
 
 import PropTypes from "prop-types";
@@ -19,26 +24,16 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   LineController,
+  RadarController,
   RadialLinearScale,
   PointElement,
   LineElement,
   Filler,
   Tooltip,
-  Legend
+  Legend,
 );
 
-//const colors = ["yellow", "magenta", "cyan", "red", "blue", "green"];
 const colors = ["#0004ff", "#ee00bf", "#ff0075", "#ff4631", "#ffac00", "#fff200"];
-
-// RX DATA ////////////////////////////////////////////////////////////////////////
-
-// const initialDisplayData = (intialVal) => {
-//   return {
-//     xVel: [intialVal], 
-//     yVel: [intialVal], 
-//     zVel: [intialVal],
-//   }
-// }
 
 const initRxData = (initialVal) =>  {
 
@@ -105,25 +100,10 @@ export default function CardRadarChart({
   title = "Default Title",
   subTitle = "Default Subtitle",
   deviceId = null,
-  //initialDisplayData = {xVel: [], yVel: [], zVel: []},
-  //xAxisLabels = [0, 1, 2, 3, 4, 5]
 }) {
 
-  // const ws = useRef();
-  // const [rxData, dispatch_rxData] = React.useReducer(rxDataReducer, 0, initRxData)
-  // const [data, setData] = useState({datasets:[]});
   const [_dispatch_txData, _rxData] = useWebSocket(rxDataReducer, null, initRxData);
   const [_data, _setData] = useState({datasets:[]});
-  //console.log("CARDLINE STORE: ", deviceId);
-  // useEffect(() => {
-  //   ws.current = reconnectingWebSocket();
-  //   ws.current.on(dispatch_rxData);
-    
-  //   return () => {
-  //     ws.current.off(dispatch_rxData);
-  //     ws.current.close();
-  //   }
-  // }, []);
 
   // Subscribe to relevant data
   useEffect(() => {
@@ -139,6 +119,7 @@ export default function CardRadarChart({
     }
   }, [_dispatch_txData, deviceId]);
   
+  // Update Display Data
   useEffect(() => {
     _setData({
       labels: [...Array(360).keys()],
@@ -154,23 +135,10 @@ export default function CardRadarChart({
     })
   }, [_rxData])
 
-  // const data = {
-  //   datasets: Array.from(Object.keys(rxData), (key, i) => {
-  //     return {
-  //       label: key,
-  //       backgroundColor: colors[i],
-  //       borderColor: colors[i],
-  //       data: rxData[key],
-  //       fill: false,
-  //     }
-  //   }),
-  // }
-
-  //const options = useCallback(() => { return {
+  // Chart Configuration
   const options = useMemo(() => {
     return {
       animation: false,
-      //parsing: false, //Important: datasets must be array of objects with x and y key-value pairs
       maintainAspectRatio: false,
       events: [],
       responsive: true,
@@ -200,20 +168,8 @@ export default function CardRadarChart({
               return 4;
           },
           hitRadius: 0,
-          // (value) => { // Just draw points with value > 0
-          //   if(value.raw > 0)
-          //     return 4;
-          // },
           hoverBorderWidth: 0,
-          // (value) => { // Just draw points with value > 0
-          //   if(value.raw > 0)
-          //     return 4;
-          // },
           borderWidth: 0,
-          // (value) => { // Just draw points with value > 0
-          //   if(value.raw > 0)
-          //     return 4;
-          // },
         },
         line: {
           borderWidth: 0,
@@ -289,10 +245,9 @@ export default function CardRadarChart({
           </div>
         </div>
         <div className="p-4 flex-auto">
+
           {/* ChartJS */}
           <div className="relative aspect-video">
-            {/* <canvas id="line-chart"></canvas> */}
-            {/* <Line options={options} data={_data} /> */}
             <canvas id="myRadarChart"></canvas>
           </div>
         </div>
@@ -304,11 +259,5 @@ export default function CardRadarChart({
 CardRadarChart.propTypes = {
   title: PropTypes.string,
   subTitle: PropTypes.string,
-  // yAxisLabel : PropTypes.string,
-  // xAxisLabel : PropTypes.string,
   deviceID : PropTypes.number,
-  //initialDisplayData : PropTypes.objectOf(PropTypes.array).isRequired,
-  //xAxisLabels : PropTypes.array,
 };
-
-//export default CardLineChart;

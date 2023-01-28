@@ -11,10 +11,8 @@ const TableItem = ({
     deviceName,
     status,
     batteryLevel,
-    //imageName, // With extension
     deviceID,
     deviceType,
-    //listKey,
   
   }) => {
     const { setSelectedDevice } = useStore();
@@ -36,58 +34,39 @@ const TableItem = ({
     
     const imageName = (deviceType === "Omniwheel" ? "omniwheel1.jpg" : (deviceType === "Arduino") ? "arduino-mkr-wifi-1010.jpg" : "unknown.jpg")
     const imageData = imageDataNodes.find(element => element.base === imageName);
-    //console.log(imageData)
     const imageUnknown = imageDataNodes.find(element => element.base === "unknown.jpg");
-    //console.log(imageUnknown)
-    //console.log(color)
     
     return (
       <tr>
+
+        {/* UNIT ID WITH LINK AND PICTURE */}
         <th className=""
             onClick={() => setSelectedDevice((state) => deviceID)}
             //key={listKey}
         >
-            <Link 
-                className="w-full cursor-pointer border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center"
-                to="/robots"
-                //onMouseEnter={() => setExpandShow("")}
-                // onMouseLeave={() => setExpandShow("hidden")}
+          <Link 
+              className="w-full cursor-pointer border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center"
+              to="/robots"
+          >
+            <GatsbyImage
+              image={(imageData === undefined ? imageUnknown.childImageSharp.gatsbyImageData : imageData.childImageSharp.gatsbyImageData)}
+              className="h-12 w-12 bg-white rounded-full border"
+              alt="Device Image"
+              placeholder="blurred"
+              loading ='eager'
+            />
+            <span
+              className={
+                "ml-3 font-bold object-left " +
+                (color === "light" ? "text-blueGray-500" : "text-white")
+              }
             >
+              {deviceName}
+            </span>
 
-                {/* <img
-                    src={require("../../assets/img/arduino-mkr-wifi-1010.jpg").default}
-                    className="h-12 w-12 bg-white rounded-full border"
-                    alt="..."
-                ></img>{" "} */}
-                <GatsbyImage
-                    //src="../../images/unknown.jpg"
-                    //data={imageData}
-                    image={(imageData === undefined ? imageUnknown.childImageSharp.gatsbyImageData : imageData.childImageSharp.gatsbyImageData)}
-                    className="h-12 w-12 bg-white rounded-full border"
-                    //imgClassName="h-12 w-12 bg-white rounded-full border"
-                    alt="Device Image"
-                    placeholder="blurred"
-                    //layout="fullWidth"
-                    loading ='eager'
-                    // width={1024}
-                    // height={1024}
-                />
-                <span
-                    className={
-                    "ml-3 font-bold object-left " +
-                    (color === "light" ? "text-blueGray-500" : "text-white")
-                    }
-                >
-                    {deviceName}
-                </span>
-
-            </Link>
+          </Link>
         </th>
-  
-        {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-          $2,500 US
-          D
-        </td> */}
+
         {/* STATUS */}
         <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
           <i className={"fas fa-circle " + (status === "online" ? "text-green-500" : status === "offline" ? "text-red-500" : "text-blueGray-500") + " mr-2"}></i> {status}
@@ -123,7 +102,6 @@ const TableItem = ({
     deviceName: "defaultName",
     status: "offline",
     batteryLevel: 50,
-    //imageName: "unknown.jpg",
     deviceID: -1,
     deviceType: "unknown"
   };
@@ -133,10 +111,8 @@ const TableItem = ({
     deviceName: PropTypes.string,
     status: PropTypes.oneOf(["online", "offline", "unknown"]),
     batteryLevel: PropTypes.number,
-    //imageName: PropTypes.string,
     deviceID: PropTypes.number,
     deviceType: PropTypes.string,
-    //listKey: PropTypes.number.isRequired,
   };
 
   export default TableItem;

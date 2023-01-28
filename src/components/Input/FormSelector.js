@@ -1,9 +1,10 @@
-import React, { useReducer } from "react";
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Instantiates several Cartesian Forms and allows selection to send different commands /////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+import React from "react";
 import PropTypes from "prop-types";
 import CartesianForm from "./CartesianForm";
-import useWebSocket from "../WebSocket/useWebSocket";
-
-//const forms = ["Motor Speeds", "Robot Speeds", "Robot Position", "Robot Cartesian Position"]
 
 const FormSelector = ({
     forms = ["Motor Speeds", "Robot Speeds", "Robot Position", "Robot Cartesian Position"],
@@ -16,7 +17,6 @@ const FormSelector = ({
     deviceId = null,
 }) => {
     const [openTab, setOpenTab] = React.useState(1);
-    // const [_dispatch_txData] = useWebSocket();
 
     console.log("Form Data: ", formData);
     console.log("Forms: ", forms);
@@ -54,63 +54,6 @@ const FormSelector = ({
                         ))
                     }
                     
-                    {/* <li className="-mb-px mr-2 last:mr-0 flex-auto text-center">
-                        <a
-                            className={
-                            "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
-                            (openTab === 1
-                                ? "text-white bg-lightBlue-600"
-                                : "text-lightBlue-600 bg-white")
-                            }
-                            onClick={e => {
-                            e.preventDefault();
-                            setOpenTab(1);
-                            }}
-                            data-toggle="tab"
-                            href="#link1"
-                            role="tablist"
-                        >
-                            Profile
-                        </a>
-                    </li>
-                    <li className="-mb-px mr-2 last:mr-0 flex-auto text-center">
-                    <a
-                        className={
-                        "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
-                        (openTab === 2
-                            ? "text-white bg-lightBlue-600"
-                            : "text-lightBlue-600 bg-white")
-                        }
-                        onClick={e => {
-                        e.preventDefault();
-                        setOpenTab(2);
-                        }}
-                        data-toggle="tab"
-                        href="#link2"
-                        role="tablist"
-                    >
-                        Settings
-                    </a>
-                    </li>
-                    <li className="-mb-px mr-2 last:mr-0 flex-auto text-center">
-                    <a
-                        className={
-                        "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
-                        (openTab === 3
-                            ? "text-white bg-lightBlue-600"
-                            : "text-lightBlue-600 bg-white")
-                        }
-                        onClick={e => {
-                        e.preventDefault();
-                        setOpenTab(3);
-                        }}
-                        data-toggle="tab"
-                        href="#link3"
-                        role="tablist"
-                    >
-                        Options
-                    </a>
-                    </li> */}
                 </div>
                 <div className="relative flex flex-col min-w-0 break-words w-full mb-2 shadow-lg rounded">
                     <div className="flex-auto">
@@ -126,46 +69,11 @@ const FormSelector = ({
                                     </div>
                                 ))
                             }
-                            {/* <div className={openTab === 1 ? "block" : "hidden"} id="link1">
-                                <p>
-                                    Collaboratively administrate empowered markets via
-                                    plug-and-play networks. Dynamically procrastinate B2C users
-                                    after installed base benefits.
-                                    <br />
-                                    <br /> Dramatically visualize customer directed convergence
-                                    without revolutionary ROI.
-                                </p>
-                            </div>
-                            <div className={openTab === 2 ? "block" : "hidden"} id="link2">
-                                <p>
-                                    Completely synergize resource taxing relationships via
-                                    premier niche markets. Professionally cultivate one-to-one
-                                    customer service with robust ideas.
-                                    <br />
-                                    <br />
-                                    Dynamically innovate resource-leveling customer service for
-                                    state of the art customer service.
-                                </p>
-                            </div>
-                            <div className={openTab === 3 ? "block" : "hidden"} id="link3">
-                                <p>
-                                    Efficiently unleash cross-media information without
-                                    cross-media value. Quickly maximize timely deliverables for
-                                    real-time schemas.
-                                    <br />
-                                    <br /> Dramatically maintain clicks-and-mortar solutions
-                                    without functional solutions.
-                                </p>
-                            </div> */}
                         </div>
                     </div>
                 </div>
-
-                
-
             </div>
         </div>
-        //</>
     );
 };
 

@@ -1,7 +1,5 @@
 import React, { useCallback, useReducer } from "react";
-//import PropTypes from "prop-types";
 import Input from "./Input";
-//import { useStore } from "../Store/Store.jsx";
 
 const initialState = {
     ip: "",
@@ -16,26 +14,17 @@ const reducer = (state, {field, value}) => {
 }
 
 const ConnectForm = () => {
-    //const {setConnectionData} = useStore();
 
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const handleSubmit = (e) => {
-        //alert('Your favorite flavor is: ' + this.state.value);
         console.log("Submited state: %s", JSON.stringify(state));
-        //setConnectionData(state);
         e.preventDefault();
     }
 
     const onChange = useCallback((e) => {
         dispatch({field: e.target.name, value: e.target.value});
     }, [])
-
-    // useEffect(() => {
-    //     console.log("Connect Form State: %s", JSON.stringify(state));
-    //     //console.log(state);
-        
-    // }, [state]);
 
     return (
         
@@ -80,11 +69,3 @@ const ConnectForm = () => {
 }
 
 export default ConnectForm;
-
-// ConnectForm.defaultProps = {
-//     iconName: "fas fa-lock",
-// };
-  
-// ConnectForm.propTypes = {
-//     iconName: PropTypes.string,
-// };
