@@ -1,18 +1,15 @@
-import React from "react";
-//import { Link } from "gatsby";
+// Connect page, no longer used
 
-//import Layout from "../layouts/layout1.js";
+import React from "react";
 import ConnectForm from "../components/Input/ConnectForm.js";
 
 const Connect = () => {
     return (
-        //<Layout>
-            <div className="flex flex-wrap">
-                <div className="w-full px-4">
-                    <ConnectForm />
-                </div>
+        <div className="flex flex-wrap">
+            <div className="w-full px-4">
+                <ConnectForm />
             </div>
-        //</Layout>
+        </div>
   );
 }
 

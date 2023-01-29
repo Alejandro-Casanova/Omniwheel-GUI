@@ -17,6 +17,7 @@ export const withStore = ({element}) => {
   ) 
 }
 
+// Custom Hook to extract global state from context anywhere
 export const useStore = () => {
   return React.useContext(storeContext);
 }

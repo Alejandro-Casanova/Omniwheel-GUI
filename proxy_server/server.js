@@ -8,7 +8,6 @@ Then:
 
 import http from 'http';
 import fs from 'fs';
-//const ws = new require('ws');
 import { WebSocketServer } from "ws"
 import os from 'os'
 
@@ -16,135 +15,17 @@ import net from "net"
 
 const MOTOR_PULSES_PER_REVOLUTION = 4000
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/// AUXILIARY FUNCTIONS /////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Adds ceros to the left to format message (always 8 digits)
-// FOR SAFETY: if a number is longer than "size", it will be overflowed to 0
-function zeros(num, size) {
-  num = num == "" ? 0 : parseInt(num)
-  // console.log(num)
-  if( isNaN(num) ){
-    // console.log("TRUE")
-    num = 0
-  }
-  if(num < 0){
-      num = -num;
-      num = num.toString();
-
-      // Check overflow
-      if(num.length >= size){
-        num = "0";
-      }
-
-      while (num.length < size-1) num = "0" + num;
-      num = "1" + num; 
-  }
-  else{
-      num = num.toString();
-
-      // Check overflow
-      // console.log(num)
-      // console.log("len: ", num.length)
-      if(num.length >= size){
-        num = "0";
-      }
-
-      // console.log(num)
-      while (num.length < size-1){
-        num = "0" + num;
-        // console.log(num)
-      } 
-      num = "0" + num;  
-      // console.log(num)
-  }
-  return num;
-}
-
-// Parse messages to Arduino format
-function parse_to_arduino(command_type, rw , data){
-
-  let header;
-  var s;
-
-  if(rw == 'w'){
-    switch(command_type){
-      
-      case 'MOT':
-        header = "OWR";
-        // Format and convert rad/s to pulses/s
-        s = `${header}:${zeros((data.value1*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}:${zeros((data.value2*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}:${zeros((data.value3*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}`;
-        return s;
-
-      case 'VEL':
-        header = "OWR_CI";
-        break;
-
-      case 'POS':
-        header = "OWR_RP";
-        break;
-
-      case 'POSC':
-        header = "OWR_CP";
-        break;
-      
-      default:
-        console.log(`On parse_to_arduino: unknown command type for operation write: ${command_type}`);
-        return null;
-
-    }
-
-    s = `${header}:${zeros(data.value1,8)}:${zeros(data.value2,8)}:${zeros(data.value3,8)}`;
-
-  }
-  else if (rw == 'r'){
-
-    switch(command_type){
-      
-      case 'MOT':
-        header = "OWR-RMOT";
-        break;
-
-      case 'VEL':
-        header = "OWR-RVEL";
-        break;
-
-      case 'POS':
-        header = "OWR-RPOS";
-        break;
-      
-      default:
-        console.log(`On parse_to_arduino: unknown command type for operation read: ${command_type}`);
-        return null;
-        
-    }
-    
-    s = `${header}:${zeros(0,8)}:${zeros(0,8)}:${zeros(0,8)}`;
-
-  }
-
-  return s;
-
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
 const http_server = http.createServer(accept).listen(8080, () => {
   console.log("Opened http server on ", http_server.address());
 })
 
 const wss = new WebSocketServer({noServer: true});
 
-// const Browser_clients = new Set();
-// const Arduino_clients = new Set();
+// Structures to save Arduino Sockets and Client WebSockets
 const Browser_clients = [null];
 const Arduino_clients = [null];
 
-//const Arduino_data = [];
-
+// Class definition for data handling
 class ArduinoData {
   #data;
   #globalListeners
@@ -253,6 +134,7 @@ class ArduinoData {
   }
 }
 
+// Single Arduino Data Object
 class ArduinoDataObject {
   constructor() {
     this.info = {
@@ -293,6 +175,7 @@ class ArduinoDataObject {
   }
 }
 
+// Listeners for client subscription to new Arduino Data (each listener is notified when new data arrives)
 class ArduinoListenerObject {
   constructor() {
     this.info = new Set(),
@@ -304,24 +187,17 @@ class ArduinoListenerObject {
   }
 }
 
+// Main Arduino Data Object
 const myArduinoData = new ArduinoData()
 
-// const Arduino_listeners = [
-//   {
-//     status: new Set(),
-//     position: new Set(),
-//     velocity: new Set(),
-//   }
-// ]
+// Log network interfaces to check local ip addresses
+console.log(os.networkInterfaces());
 
-// Listeners for all Arduino devices
-// const Arduino_listeners_global = 
-// {
-//   status: new Set(),
-//   position: new Set(),
-//   velocity: new Set(),
-// }
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// WEBSOCKET SERVER ///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Aux function to send structured data to client through websocket
 function sendData(ws, device_id, data_type, data){
   const message = {
     msg_type: "data",
@@ -335,13 +211,7 @@ function sendData(ws, device_id, data_type, data){
   ws.send(JSON.stringify(message));
 }
 
-// Log network interfaces to check local ip addresses
-console.log(os.networkInterfaces());
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// WEBSOCKET SERVER ///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
+// Add client webSocket to array on first free gap
 function add_client(client, array){
   console.log("Add client function called");
 
@@ -361,17 +231,17 @@ function add_client(client, array){
   
 }
 
+// Callback for accepted connections
 function accept(req, res) {
-
   if (req.url == '/ws' && req.headers.upgrade &&
       req.headers.upgrade.toLowerCase() == 'websocket' &&
       // can be Connection: keep-alive, Upgrade
       req.headers.connection.match(/\bupgrade\b/i)) {
     console.log("Web socket connected")
     wss.handleUpgrade(req, req.socket, Buffer.alloc(0), onSocketConnect);
-  } else if (req.url == '/') { // index.html
+  } else if (req.url == '/') { // browser_test.html
     console.log("Browser Connected")
-    fs.createReadStream('./index.html').pipe(res);
+    fs.createReadStream('./browser_test.html').pipe(res);
   } else { // page not found
     console.log("Page not Found: ", req.url);
     res.writeHead(404);
@@ -379,13 +249,10 @@ function accept(req, res) {
   }
 }
 
-function onSocketConnect(ws) {
-  //Browser_clients.add(ws);
+// On Socket Connect Callback
+function onSocketConnect(ws) 
+{
   const _client_index = add_client(ws, Browser_clients);
-
-  //Current Subscription Data
-  //let _sub_device_id = null;
-  //let _sub_data_type = null;
   const _sub_data = [];
 
   console.log(`new connection`);
@@ -393,7 +260,6 @@ function onSocketConnect(ws) {
   // ON MESSAGE CALLBACK ///////////////////////////////////////////////////////////////////////////////////////
   ws.on('message', (message) => {
     //onsole.log(`message received: ${message}`);
-
     //message = message.slice(0, 100); // max message length will be 50
 
     // Parse Message
@@ -403,19 +269,13 @@ function onSocketConnect(ws) {
     } catch (error) {
       console.log("Invalid JSON string: %s", message);
     }
-    
-    // FOR TEST
-    // if(parsed_message.msg_type.startsWith("test")){
-    //   if(Arduino_data[_client_index] === undefined){
-    //     Arduino_data[_client_index] = new ArduinoDataObject("unknown", "unknown");
-    //   }
-    // }
 
     //log(`message after slice: ${message}`);
     console.log("Parsed object from msg: ", parsed_message);
 
     try {
       
+      // Filter depending on message type
       switch(parsed_message.msg_type){
 
         case "test":{
@@ -576,6 +436,118 @@ function onSocketConnect(ws) {
   });
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/// AUXILIARY FUNCTIONS FOR ARDUINO SERVER //////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Adds ceros to the left to format message (always 8 digits)
+// FOR SAFETY: if a number is longer than "size", it will be overflowed to 0
+function zeros(num, size) {
+  num = num == "" ? 0 : parseInt(num)
+  // console.log(num)
+  if( isNaN(num) ){
+    // console.log("TRUE")
+    num = 0
+  }
+  if(num < 0){
+      num = -num;
+      num = num.toString();
+
+      // Check overflow
+      if(num.length >= size){
+        num = "0";
+      }
+
+      while (num.length < size-1) num = "0" + num;
+      num = "1" + num; 
+  }
+  else{
+      num = num.toString();
+
+      // Check overflow
+      // console.log(num)
+      // console.log("len: ", num.length)
+      if(num.length >= size){
+        num = "0";
+      }
+
+      // console.log(num)
+      while (num.length < size-1){
+        num = "0" + num;
+        // console.log(num)
+      } 
+      num = "0" + num;  
+      // console.log(num)
+  }
+  return num;
+}
+
+// Parse messages to Arduino format
+function parse_to_arduino(command_type, rw , data){
+
+  let header;
+  var s;
+
+  if(rw == 'w'){
+    switch(command_type){
+      
+      case 'MOT':
+        header = "OWR";
+        // Format and convert rad/s to pulses/s
+        s = `${header}:${zeros((data.value1*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}:${zeros((data.value2*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}:${zeros((data.value3*MOTOR_PULSES_PER_REVOLUTION/2/Math.PI), 8)}`;
+        return s;
+
+      case 'VEL':
+        header = "OWR_CI";
+        break;
+
+      case 'POS':
+        header = "OWR_RP";
+        break;
+
+      case 'POSC':
+        header = "OWR_CP";
+        break;
+      
+      default:
+        console.log(`On parse_to_arduino: unknown command type for operation write: ${command_type}`);
+        return null;
+
+    }
+
+    s = `${header}:${zeros(data.value1,8)}:${zeros(data.value2,8)}:${zeros(data.value3,8)}`;
+
+  }
+  else if (rw == 'r'){
+
+    switch(command_type){
+      
+      case 'MOT':
+        header = "OWR-RMOT";
+        break;
+
+      case 'VEL':
+        header = "OWR-RVEL";
+        break;
+
+      case 'POS':
+        header = "OWR-RPOS";
+        break;
+      
+      default:
+        console.log(`On parse_to_arduino: unknown command type for operation read: ${command_type}`);
+        return null;
+        
+    }
+    
+    s = `${header}:${zeros(0,8)}:${zeros(0,8)}:${zeros(0,8)}`;
+
+  }
+
+  return s;
+
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // ARDUINO SERVER /////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -583,16 +555,15 @@ function onSocketConnect(ws) {
 const Arduino_server_options = {
   //keepAlive: true,
 }
+
 const Arduino_server = net.createServer(Arduino_server_options, (client) => {
   console.log('Client connect. Client local address: ' + client.localAddress + ':' + client.localPort + '. client remote address: ' + client.remoteAddress + ':' + client.remotePort);
   
   //Arduino_clients.add(client);
   const current_index = add_client(client, Arduino_clients);
   // console.log(Arduino_clients)
-  //Arduino_data[current_index] = new ArduinoDataObject("unkown", "unknown");
 
   client.setTimeout(30000);   // 30s
-  //client.setKeepAlive(true);
 
   client.on('data', async (data) => {
     // Print received client data and length.
@@ -602,6 +573,7 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
     try{
       parsed_message = JSON.parse(data);
 
+      // Filter depending on message type
       switch(parsed_message.msg_type){
 
         case "data":
@@ -641,13 +613,6 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
           throw Error(`Unknown message type: ${parsed_message.msg_type}`);        
       }
 
-      // if(msg.msg_type === "init"){
-      //   // Arduino_data[current_index].name = msg.name;
-      //   // Arduino_data[current_index].type = msg.type;
-      //   myArduinoData.set(current_index, "info", (({name, robot_type}) => ({name, type: robot_type}))(msg));
-      // }else if(msg.msg_type === "keepAlive"){
-      //   client.setTimeout(30000);
-      // }
     }catch(err){
       console.log(err);
     }
@@ -655,28 +620,10 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
 
   // When client signals end of transmition
   client.on('end', () => {
-
-    // //Arduino_clients.delete(client);
-    // delete Arduino_clients[current_index];
-    // Arduino_clients[current_index] = null;
-    
-    // console.log('Client disconnect.');
-    
-    // // Get current connections count.
-    // Arduino_server.getConnections((err, count) => {
-
-    //   if(!err) {
-    //     // Print current connection count in server console.
-    //     console.log("There are %d connections now. ", count);
-    //   } else {
-    //     console.error(err);
-    //   }
-
-    // });
     console.log("Socket on end, index: ", current_index);
-
   });
 
+  // On Error Callback (print error)
   client.on('error', (err) => {
     console.log("Socket on error: ", err, " index: ", current_index)
   })
@@ -705,20 +652,16 @@ const Arduino_server = net.createServer(Arduino_server_options, (client) => {
 
   })
 
+  // On timeout Callback (close dead connection)
+  // Useful when Robot disconnects abruptly without signaling connection closure
   client.on('timeout', () => {
     console.log("Socket on timeout, index: ", current_index)
     Arduino_clients[current_index].end();
   })
 
-  // When client timeout.
-  // client.on('timeout', function () {
-  //     console.log('Client request time out. ');
-  //     client.destroy();
-  // })
-
 })
 
-// Error handling
+// Server Error handling
 Arduino_server.on('error', (err) => {
   console.error(err);
   throw err;
