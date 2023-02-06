@@ -2,7 +2,7 @@
 // Self-reconnecting websocket component, used in the useWebSocket Custom Hook /////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const URL = "ws://localhost:8080/ws";
+import { URL } from "./defines"
 
 export default function reconnectingWebSocket() {
     let client;

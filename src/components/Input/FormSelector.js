@@ -33,7 +33,7 @@ const FormSelector = ({
                             <div key={index}  className="-mb-px mr-0 flex-initial text-center">
                                 <a
                                     className={
-                                        "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal " +
+                                        "text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal outline-none " +
                                         (openTab === (index + 1)
                                             ? "text-white bg-blue-600 //bg-lightBlue-800"
                                             //: "text-lightBlue-600 bg-white"

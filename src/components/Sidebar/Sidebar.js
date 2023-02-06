@@ -14,7 +14,7 @@ export default function Sidebar2({currentPath}) {
                     //" bg-white" +
                     " bg-myGray-3" +
                     " flex flex-wrap items-center justify-between relative z-40 py-4 px-5"}
-          onMouseEnter={() => setExpandShow("")}
+          onMouseEnter={() => setExpandShow("")} 
           onMouseLeave={() => setExpandShow("md:hidden")}>
       <div className="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto">
         
@@ -32,6 +32,7 @@ export default function Sidebar2({currentPath}) {
           className={
             //"md:block text-left md:pb-2 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0 " +
             "md:block text-left md:pb-2 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold py-4 pl-4 pr-3 " + 
+            " outline-none " +
             //(window.location.href.indexOf("/admin/tables") !== -1
             (currentPath === "/"
               ? "text-lightBlue-500 hover:text-lightBlue-600"
@@ -73,7 +74,7 @@ export default function Sidebar2({currentPath}) {
               <div className="w-6/12">
                 <Link
                   className={
-                    "md:block text-left md:pb-2 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0 " +
+                    "md:block text-left md:pb-2 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0 outline-none " +
                     //(window.location.href.indexOf("/admin/tables") !== -1
                     (currentPath === "/"
                       ? "text-lightBlue-500 hover:text-lightBlue-600"
@@ -107,7 +108,7 @@ export default function Sidebar2({currentPath}) {
             <li className="items-center" >
               <Link 
                 className={
-                  "text-xs uppercase py-3 font-bold block " +
+                  "text-xs uppercase py-3 font-bold block outline-none " +
                   (currentPath === "/connect"
                     ? "text-lightBlue-500 hover:text-lightBlue-600"
                     : "text-blueGray-300 hover:text-blueGray-500")
@@ -130,7 +131,7 @@ export default function Sidebar2({currentPath}) {
             <li className="items-center">
               <Link
                 className={
-                  "text-xs uppercase py-3 font-bold block " +
+                  "text-xs uppercase py-3 font-bold block outline-none " +
                   (currentPath === "/dashboard"
                     ? "text-lightBlue-500 hover:text-lightBlue-600"
                     : "text-blueGray-300 hover:text-blueGray-500")
@@ -153,7 +154,7 @@ export default function Sidebar2({currentPath}) {
             <li className="items-center">
               <Link
                 className={
-                  "text-xs uppercase py-3 font-bold block " +
+                  "text-xs uppercase py-3 font-bold block outline-none " +
                   (currentPath === "/robots"
                     ? "text-lightBlue-500 hover:text-lightBlue-600"
                     : "text-blueGray-300 hover:text-blueGray-500")
@@ -176,7 +177,7 @@ export default function Sidebar2({currentPath}) {
             <li className="items-center">
               <Link
                 className={
-                  "text-xs uppercase py-3 font-bold block " +
+                  "text-xs uppercase py-3 font-bold block outline-none " +
                   (currentPath === "/gpio"
                     ? "text-lightBlue-500 hover:text-lightBlue-600"
                     : "text-blueGray-300 hover:text-blueGray-500")
@@ -199,7 +200,7 @@ export default function Sidebar2({currentPath}) {
             <li className="items-center">
               <Link
                 className={
-                  "text-xs uppercase py-3 font-bold block " +
+                  "text-xs uppercase py-3 font-bold block outline-none " +
                   (currentPath === "/settings"
                     ? "text-lightBlue-500 hover:text-lightBlue-600"
                     : "text-blueGray-300 hover:text-blueGray-500")

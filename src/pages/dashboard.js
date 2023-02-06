@@ -2,6 +2,7 @@ import React from "react";
 import DeviceTable from "../components/Cards/DeviceTable";
 import CardScatterChart from "../components/Cards/Charts/CardScatterChart.js";
 import GlobalCommands from "../components/Input/GlobalCommands";
+import ProxyConnectionState from "../components/Cards/ProxyConnectionState/ProxyConnectionState";
 
 const Dashboard = () => {
   return (
@@ -14,6 +15,7 @@ const Dashboard = () => {
                 <div className="relative flex flex-col flex-nowrap">
                     <div className="w-full flex-auto">
                         <DeviceTable color="dark" />
+                        {/* <ProxyConnectionState color="dark" /> */}
                     </div>
                     <div className="w-full flex-auto shadow-lg">
                         <GlobalCommands />

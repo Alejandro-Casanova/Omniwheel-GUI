@@ -127,7 +127,7 @@ const useWebSocket = (
 
     }, [_isConnected, _txData])
 
-    return [_dispatch_txData, _rxData]
+    return [_dispatch_txData, _rxData, _isConnected]
 }
 
 useWebSocket.propTypes = {

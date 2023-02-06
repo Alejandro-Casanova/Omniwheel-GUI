@@ -11,7 +11,7 @@ export default function Navbar() {
           
           {/* Brand */}
           <Link
-            className="text-white text-md uppercase font-semibold hidden lg:inline-block"
+            className="text-white text-md uppercase font-semibold hidden lg:inline-block outline-none "
             to="/dashboard"
             //onClick={(e) => e.preventDefault()}
           >
