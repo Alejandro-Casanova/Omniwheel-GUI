@@ -74,20 +74,16 @@ const rxDataReducer = (state, action) => {
 
 export default function ProxyConnectionState({ color }) {
 
-  const [_dispatch_txData, _rxData, _isConnected] = useWebSocket(rxDataReducer, null, initRxData);
+  const [,,_isConnected] = useWebSocket(rxDataReducer, null, initRxData);
   const [_timeOffline, _setTimeOffline] = useState(0)
 
-  // useEffect(() => {
-  //   _dispatch_txData({msg_type: "subscribe", payload: {device_id: -1, data_type: "info"} });
-  //   _dispatch_txData({msg_type: "subscribe", payload: {device_id: -1, data_type: "status"} });
-
-  //   return () => { // Never takes place, websocket closes too fast
-  //     _dispatch_txData({msg_type: "unsubscribe", payload: {device_id: -1, data_type: "info"} });    
-  //     _dispatch_txData({msg_type: "unsubscribe", payload: {device_id: -1, data_type: "status"} });
-  //   }
-  // }, [_dispatch_txData]);
-
   useEffect(() => {
+
+    if(_isConnected){
+      _setTimeOffline(0)
+      return
+    }
+
     const timer = setInterval(()=>{
       _setTimeOffline((state)=> state + 1)
     }, 1000)
@@ -95,13 +91,13 @@ export default function ProxyConnectionState({ color }) {
     return () => {
       clearInterval(timer)
     }
-  }, [])
+  }, [_isConnected])
 
   return (
     <>
       <div
         className={
-          "relative flex flex-col min-w-0 break-words w-full pb-4 mb-6 shadow-lg rounded " +
+          "relative flex flex-col min-w-0 break-words w-full pb-0 mb-6 shadow-lg rounded " +
           (color === "light" ? "bg-white" : "bg-myGray-2 text-white")
         }
       >
@@ -120,7 +116,7 @@ export default function ProxyConnectionState({ color }) {
           </div>
         </div>
         <div className={"block w-full overflow-x-auto"
-                        + " h-64"
+                        + " h-auto"
                         //+ " max-h-full"
                         }>
 
@@ -130,7 +126,7 @@ export default function ProxyConnectionState({ color }) {
               <tr>
                 <th
                   className={
-                    "px-6 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-left " +
+                    "px-2 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-center " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
                       : "bg-myGray-3 text-blueGray-300"
@@ -141,7 +137,7 @@ export default function ProxyConnectionState({ color }) {
                 </th>
                 <th
                   className={
-                    "px-6 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-left " +
+                    "px-2 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-center " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
                       : "bg-myGray-3 text-blueGray-300"
@@ -151,7 +147,7 @@ export default function ProxyConnectionState({ color }) {
                 </th>
                 <th
                   className={
-                    "px-6 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-left " +
+                    "px-2 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-center " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
                       : "bg-myGray-3 text-blueGray-300"
@@ -161,7 +157,7 @@ export default function ProxyConnectionState({ color }) {
                   Time Offline
                 </th>
                 <th className={
-                    "px-6 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-left " +
+                    "px-2 align-middle py-3 text-xs uppercase whitespace-nowrap font-semibold text-center " +
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
                       : "bg-myGray-3 text-blueGray-300"
@@ -171,16 +167,12 @@ export default function ProxyConnectionState({ color }) {
               </tr>
             </thead>
             <tbody className="">
-              {/* {
-                Object.keys(_rxData).map((id, i) =>  */}
-                  <TableItem 
-                    color="dark"
-                    connectionStatus={(_isConnected ? "online" : "offline")}
-                    proxyAddress={URL}
-                    timeout={_timeOffline}
-                  />
-                {/* )
-              } */}
+              <TableItem 
+                color="dark"
+                connectionStatus={(_isConnected ? "online" : "offline")}
+                proxyAddress={URL}
+                timeout={_timeOffline}
+              />
             </tbody>
           </table>
         </div>

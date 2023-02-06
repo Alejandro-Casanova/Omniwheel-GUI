@@ -104,7 +104,7 @@ export default function Sidebar2({currentPath}) {
           {/* Navigation */}
           <ul className="md:flex-col md:min-w-full flex flex-col list-none pl-3">
             
-            {/* Connect */}
+            {/* Connection */}
             <li className="items-center" >
               <Link 
                 className={
@@ -122,7 +122,7 @@ export default function Sidebar2({currentPath}) {
                   }
                 ></i>{" "}
                 <p className={"inline " + expandShow}>
-                  Connect
+                  Connection
                 </p>
               </Link>
             </li>
@@ -174,7 +174,7 @@ export default function Sidebar2({currentPath}) {
             </li>
             
             {/* GPIO */}
-            <li className="items-center">
+            {/* <li className="items-center">
               <Link
                 className={
                   "text-xs uppercase py-3 font-bold block outline-none " +
@@ -194,10 +194,10 @@ export default function Sidebar2({currentPath}) {
                   GPIO
                 </p>
               </Link>
-            </li>
+            </li> */}
 
             {/* Settings */}
-            <li className="items-center">
+            {/* <li className="items-center">
               <Link
                 className={
                   "text-xs uppercase py-3 font-bold block outline-none " +
@@ -217,9 +217,9 @@ export default function Sidebar2({currentPath}) {
                   Settings
                 </p>
               </Link>
-            </li>
-
-          </ul> 
+            </li> */}  
+            
+          </ul>
 
           {/* Divider */}
           <hr className="my-4 md:min-w-full" />
