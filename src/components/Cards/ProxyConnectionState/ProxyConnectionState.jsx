@@ -130,7 +130,7 @@ export default function ProxyConnectionState({ color }) {
                     (color === "light"
                       ? "bg-blueGray-50 text-blueGray-500 border-blueGray-100"
                       : "bg-myGray-3 text-blueGray-300"
-                      )
+                    )
                   }
                 >
                   Server Address
